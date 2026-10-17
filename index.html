@@ -1,0 +1,1365 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Speak Lab</title>
+<meta name="description" content="Speak Lab, un concept d'outil d'oral en anglais pour le collège et le lycée, piloté par le professeur.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+
+/* Layout: type-only poster sections on a 12-column grid, graphite ground with light and orange fields; one giant cropped word opens, one giant wordmark closes. */
+:root {
+  color-scheme: dark;
+  --bg: #18191b;
+  --surface: #222427;
+  --ink: #eff0f1;
+  --muted: #a3a5aa;
+  --accent: #ff4a1f;
+  --accent-ink: #18191b;
+  --accent-soft: #5c1a08;
+  --accent-deep: #b52c0a;
+  --field: #eff0f1;
+  --field-ink: #18191b;
+  --field-muted: #54565b;
+  --mark: #ffc2ad;
+
+  --font: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+
+  --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-lead: clamp(1.25rem, 1.05rem + 0.8vw, 1.875rem);
+  --step-mega: clamp(2.5rem, 0.8rem + 4.6vw, 5rem);
+
+  --margin: clamp(16px, 2.2vw, 32px);
+  --gutter: clamp(16px, 2vw, 32px);
+  --section: clamp(6rem, 12vw, 12rem);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --t-press: 140ms;
+  --t-hover: 180ms;
+}
+
+* , *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: var(--step-body); line-height: 1.5; letter-spacing: -0.01em; -webkit-font-smoothing: antialiased; font-kerning: normal; }
+h1, h2, h3, p, ul, ol, dl, dd, figure, blockquote { margin: 0; }
+ul[class], ol[class] { list-style: none; padding: 0; }
+h1, h2, h3 { font-weight: 800; text-wrap: balance; letter-spacing: -0.045em; line-height: 0.92; }
+p { text-wrap: pretty; }
+a { color: inherit; text-decoration-thickness: 2px; text-underline-offset: 0.18em; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+html { scrollbar-color: var(--muted) var(--bg); }
+.num { font-variant-numeric: tabular-nums lining-nums; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.wrap { padding-left: max(var(--margin), env(safe-area-inset-left, 0px)); padding-right: max(var(--margin), env(safe-area-inset-right, 0px)); }
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
+
+.btn { display: inline-flex; align-items: center; gap: 0.6em; background: var(--accent); color: var(--accent-ink); font-weight: 600; text-decoration: none; padding: 0.95em 1.4em; border-radius: 0; transition: transform var(--t-press) var(--ease-out), background-color var(--t-hover) ease; }
+.btn:hover { background: var(--ink); }
+.btn:active { transform: scale(0.97); }
+.btn svg { width: 1.1em; height: 1.1em; transition: transform var(--t-hover) var(--ease-out); }
+.btn:hover svg { transform: translateY(3px); }
+
+/* ---------- hero ---------- */
+.bar { height: 10px; background: var(--accent); }
+.hero { position: relative; overflow: hidden; background: var(--bg); }
+.hero__top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-block: 28px 0; }
+.wordmark { font-weight: 800; font-size: var(--step-body); letter-spacing: -0.03em; text-decoration: none; }
+.nav { display: flex; gap: clamp(1rem, 2.4vw, 2.25rem); font-weight: 600; }
+.nav a { text-decoration: none; background-image: none; position: relative; }
+.nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform var(--t-hover) var(--ease-out); }
+.nav a:hover::after, .nav a:focus-visible::after { transform: scaleX(1); }
+.menu-btn { display: none; font-weight: 600; background: none; border: 0; color: inherit; font: inherit; padding: 0; cursor: pointer; }
+.hero__copy { padding-block: clamp(48px, 7vw, 96px) clamp(148px, 12vw, 172px); display: grid; gap: 28px; justify-items: start; }
+.hero__copy p { font-size: var(--step-lead); line-height: 1.3; max-width: 34ch; font-weight: 400; }
+.hero__copy p strong { font-weight: 600; }
+.hero__word { font-size: clamp(300px, 38vw, 760px); line-height: 0.8; height: 0.7em; overflow: hidden; white-space: nowrap; color: var(--accent); letter-spacing: -0.06em; margin-left: -5vw; transform-origin: 20% 100%; }
+
+
+/* the hero in 3D: the word and a speaking head share one canvas */
+.hero__gl { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; display: none; }
+.hero > .wrap { position: relative; z-index: 2; }
+.hero--3d { cursor: crosshair; }
+.hero--3d a, .hero--3d button { cursor: pointer; }
+.hero__word { position: relative; z-index: 1; }
+.hero--3d .hero__gl { display: block; }
+.hero--3d .hero__word { color: transparent; animation: none !important; }
+
+/* ---------- constat (ledger) ---------- */
+.constat { background: var(--surface); padding-block: var(--section); }
+.constat h2 { grid-column: 1 / 6; align-self: start; position: sticky; top: 30vh; font-size: var(--step-mega); }
+.constat h2 span { display: block; }
+.constat h2 .soft { color: var(--muted); }
+.ledger { grid-column: 7 / 13; display: grid; row-gap: 20px; }
+.ledger__row { display: grid; grid-template-columns: 1.25em 1.05em minmax(0, 1fr); align-items: baseline; font-size: var(--step-mega); }
+.ledger__whole, .ledger__dec { font-weight: 800; line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums lining-nums; }
+.ledger__whole { text-align: right; }
+.ledger__dec { text-align: left; }
+.ledger__cap { font-size: var(--step-body); line-height: 1.4; letter-spacing: -0.01em; padding-left: 1rem; }
+.ledger__cap a { color: var(--muted); font-size: var(--step-small); white-space: nowrap; }
+.ledger__cap a:hover { color: var(--ink); }
+
+/* ---------- calcul (two figures compared) ---------- */
+.calcul { background: var(--field); color: var(--field-ink); padding-block: var(--section) 0; }
+.calcul ::selection { background: var(--field-ink); color: var(--field); }
+.calcul__head { row-gap: 1.5rem; }
+.calcul__head h2 { grid-column: 1 / 6; font-size: var(--step-mega); }
+.calcul__head p { grid-column: 7 / 13; font-size: var(--step-body); max-width: 58ch; }
+.controls { grid-column: 1 / 13; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gutter); margin-top: clamp(40px, 6vw, 72px); }
+.control { display: grid; gap: 10px; }
+.control label { font-weight: 600; display: flex; justify-content: space-between; gap: 1rem; }
+.control output { font-weight: 800; font-variant-numeric: tabular-nums; color: var(--accent-deep); }
+.control input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 44px; background: transparent; margin: 0; cursor: pointer; }
+.control input[type=range]::-webkit-slider-runnable-track { height: 6px; background: var(--field-ink); }
+.control input[type=range]::-moz-range-track { height: 6px; background: var(--field-ink); }
+.control input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); margin-top: -10px; border: 0; transition: transform var(--t-press) var(--ease-out); }
+.control input[type=range]::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); border: 0; }
+.control input[type=range]:active::-webkit-slider-thumb { transform: scale(1.25); }
+.control input[type=range]:focus-visible { outline: 3px solid var(--accent-deep); outline-offset: 2px; }
+.hyp { grid-column: 1 / 13; color: var(--field-muted); font-size: var(--step-small); margin-top: 14px; max-width: 90ch; }
+.specimens { margin-top: clamp(56px, 9vh, 112px); }
+.spec { grid-column: span 6; min-width: 0; }
+.spec__cap { font-size: var(--step-body); font-weight: 600; display: block; margin-top: 14px; padding-bottom: clamp(48px, 7vw, 96px); max-width: 36ch; }
+.spec__cap span { font-weight: 400; color: var(--field-muted); }
+.spec__box { overflow: hidden; height: clamp(120px, 18vw, 290px); }
+.spec__fig { display: block; font-weight: 800; font-size: clamp(160px, 24vw, 400px); line-height: 0.8; letter-spacing: -0.06em; font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+.spec--with .spec__fig { color: var(--accent-deep); }
+.ratio { grid-column: 1 / 13; }
+
+
+/* the classroom in 3D */
+.room { margin-top: clamp(40px, 6vw, 72px); }
+.room__stage { position: relative; height: clamp(340px, 44vw, 600px); cursor: grab; touch-action: pan-y; }
+.room__stage:active { cursor: grabbing; }
+.room__stage canvas { display: block; width: 100%; height: 100%; }
+.room__cap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 32px; margin-bottom: 8px; font-size: var(--step-small); color: var(--field-muted); }
+.room__key { display: flex; flex-wrap: wrap; gap: 6px 20px; color: var(--field-ink); font-weight: 600; }
+.room__key span { display: inline-flex; align-items: center; gap: 8px; }
+.room__key i { width: 14px; height: 14px; display: inline-block; }
+.room__key .k-ink { background: var(--field-ink); }
+.room__key .k-acc { background: var(--accent); }
+.room[hidden] { display: none; }
+
+/* ---------- semaine (itinerary slip) ---------- */
+.semaine { background: var(--bg); padding-block: var(--section); }
+.semaine__intro { grid-column: 1 / 6; display: grid; gap: 28px; align-content: start; }
+.semaine__intro h2 { font-size: var(--step-mega); }
+.semaine__intro p { max-width: 30ch; font-size: var(--step-lead); line-height: 1.3; }
+.slip-wrap { grid-column: 7 / 12; justify-self: start; width: min(100%, 480px); }
+.slip { background: var(--field); color: var(--field-ink); padding: 28px 28px 8px; }
+.slip__title { font-weight: 800; font-size: var(--step-lead); letter-spacing: -0.03em; line-height: 1.1; }
+.slip__sub { color: var(--field-muted); margin-top: 6px; font-size: var(--step-small); }
+.slip h3 { font-size: var(--step-body); letter-spacing: -0.01em; line-height: 1.3; margin-top: 28px; margin-bottom: 8px; }
+.slip__row { display: grid; grid-template-columns: auto minmax(1.5rem, 1fr) auto; align-items: baseline; gap: 8px; padding-block: 4px; }
+.slip__what { min-width: 0; }
+.slip__what em { font-style: normal; font-weight: 600; }
+.slip__dots { overflow: hidden; white-space: nowrap; color: var(--field-muted); letter-spacing: 0.2em; }
+.slip__dots::after { content: "··································································"; }
+.slip__time { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.slip__total { display: flex; justify-content: space-between; gap: 1rem; align-items: center; background: var(--field-ink); color: var(--field); min-height: 44px; padding: 10px 14px; margin: 24px -14px 8px; font-weight: 600; }
+.slip__edge { display: block; width: 100%; height: 14px; fill: var(--field); }
+
+/* the pupil screen, drawn as the product's own interface */
+[data-ui].phone { margin-top: clamp(32px, 5vw, 64px); width: min(100%, 300px); background: #0e0f10; border: 8px solid #2b2d31; border-radius: 38px; padding: 22px 18px 20px; color: #eff0f1; font-size: 15px; line-height: 1.35; }
+[data-ui] .ph-top { display: flex; justify-content: space-between; font-size: 12px; color: #a3a5aa; font-weight: 600; }
+[data-ui] .ph-seq { margin-top: 18px; font-size: 13px; color: #a3a5aa; }
+[data-ui] .ph-task { margin-top: 6px; font-size: 19px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+[data-ui] .ph-model { margin-top: 14px; display: flex; align-items: center; gap: 10px; background: #222427; border-radius: 12px; padding: 10px 12px; font-size: 13px; }
+[data-ui] .ph-play { width: 30px; height: 30px; border-radius: 50%; background: #eff0f1; display: grid; place-items: center; flex: none; }
+[data-ui] .ph-play svg { width: 12px; height: 12px; fill: #18191b; margin-left: 2px; }
+[data-ui] canvas { display: block; width: 100%; height: 64px; margin-top: 16px; }
+[data-ui] .ph-time { display: flex; justify-content: space-between; font-size: 13px; color: #a3a5aa; font-variant-numeric: tabular-nums; margin-top: 4px; }
+[data-ui] .ph-rec { margin: 14px auto 0; width: 64px; height: 64px; border-radius: 50%; background: #ff4a1f; display: grid; place-items: center; border: 0; cursor: pointer; transition: transform 140ms var(--ease-out); }
+[data-ui] .ph-rec:active { transform: scale(0.94); }
+[data-ui] .ph-rec span { width: 22px; height: 22px; border-radius: 50%; background: #18191b; transition: border-radius 180ms ease, width 180ms ease, height 180ms ease; }
+[data-ui] .ph-rec[aria-pressed=true] span { border-radius: 4px; width: 20px; height: 20px; }
+[data-ui] .ph-rec[aria-pressed=true] { animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 50% { transform: scale(1.06); } }
+[data-ui] .ph-crit { margin-top: 16px; display: grid; gap: 6px; font-size: 13px; }
+[data-ui] .ph-crit li { display: flex; gap: 8px; align-items: baseline; }
+[data-ui] .ph-crit li::before { content: ""; width: 9px; height: 9px; border-radius: 50%; border: 2px solid #ff4a1f; flex: none; transform: translateY(1px); }
+[data-ui] .ph-crit li.ok::before { background: #ff4a1f; }
+.phone-note { margin-top: 12px; color: var(--muted); font-size: var(--step-small); }
+
+
+/* ---------- essayer: a lesson in the playful app style, in Speak Lab's colours ---------- */
+.essai { background: var(--field); color: var(--field-ink); padding-block: var(--section); }
+.essai ::selection { background: var(--field-ink); color: var(--field); }
+.essai__head { row-gap: 1.5rem; align-items: end; }
+.essai__head h2 { grid-column: 1 / 7; font-size: var(--step-mega); }
+.essai__head p { grid-column: 7 / 13; max-width: 54ch; }
+.lesson-wrap { margin-top: clamp(40px, 6vw, 72px); display: flex; justify-content: center; }
+[data-ui].lesson { --l-line: #d7d8dc; --l-line-deep: #c3c4c9; --l-card: #ffffff; --l-acc: #ff4a1f; --l-acc-deep: #b52c0a; --l-acc-soft: #ffe3d9; --l-ink: #18191b; --l-mute: #6b6d72;
+  width: min(100%, 760px); background: var(--l-card); color: var(--l-ink); border: 2px solid var(--l-line); border-radius: 28px; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; min-height: 640px; font-size: 18px; line-height: 1.4; }
+[data-ui] .l-top { display: flex; align-items: center; gap: 16px; padding: 22px 26px 6px; }
+[data-ui] .l-close { width: 36px; height: 36px; border: 0; background: none; color: #a4a6ab; cursor: pointer; border-radius: 10px; display: grid; place-items: center; flex: none; transition: color 150ms ease, background-color 150ms ease; }
+[data-ui] .l-close:hover { color: var(--l-ink); background: #f1f1f3; }
+[data-ui] .l-close svg { width: 18px; height: 18px; }
+[data-ui] .l-bar { flex: 1; height: 18px; background: #e7e8eb; border-radius: 999px; overflow: hidden; }
+[data-ui] .l-bar i { display: block; height: 100%; width: 0; background: var(--l-acc); border-radius: 999px; position: relative; transition: width 500ms cubic-bezier(0.22, 1, 0.36, 1); }
+[data-ui] .l-bar i::after { content: ""; position: absolute; left: 10px; right: 10px; top: 4px; height: 5px; border-radius: 999px; background: rgba(255, 255, 255, 0.35); }
+[data-ui] .l-xp { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: var(--l-acc); flex: none; font-variant-numeric: tabular-nums; }
+[data-ui] .l-xp svg { width: 22px; height: 22px; fill: var(--l-acc); }
+[data-ui] .l-body { padding: 18px clamp(20px, 5vw, 56px) 28px; display: grid; align-content: start; gap: 22px; }
+[data-ui] .l-step-name { font-size: 15px; font-weight: 800; color: var(--l-acc-deep); }
+[data-ui] .l-title { font-size: clamp(24px, 3vw, 30px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.12; margin-top: -14px; }
+[data-ui] .screen { display: grid; gap: 22px; animation: l-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+[data-ui] .screen[hidden] { display: none; }
+@keyframes l-in { from { opacity: 0; transform: translateX(28px); } }
+
+/* chunky buttons and tiles: a deeper bottom edge, pressed down on click */
+[data-ui] .chunk { font: inherit; font-weight: 800; font-size: 16px; letter-spacing: 0.04em; text-transform: uppercase; border: 0; border-radius: 16px; padding: 15px 22px; cursor: pointer; background: var(--l-acc); color: #fff; box-shadow: 0 5px 0 var(--l-acc-deep); transform: translateY(0); transition: transform 90ms ease, box-shadow 90ms ease, filter 150ms ease, background-color 150ms ease; }
+[data-ui] .chunk:hover { filter: brightness(1.06); }
+[data-ui] .chunk:active { transform: translateY(5px); box-shadow: 0 0 0 var(--l-acc-deep); }
+[data-ui] .chunk:focus-visible { outline: 3px solid var(--l-ink); outline-offset: 3px; }
+[data-ui] .chunk--ghost { background: var(--l-card); color: var(--l-mute); box-shadow: 0 4px 0 var(--l-line-deep); border: 2px solid var(--l-line); }
+[data-ui] .chunk--ghost:active { box-shadow: 0 0 0 var(--l-line-deep); transform: translateY(4px); }
+[data-ui] .chunk[disabled] { background: #e7e8eb; color: #707277; box-shadow: 0 5px 0 #d2d3d7; cursor: not-allowed; filter: none; transform: none; }
+[data-ui] .tile { font: inherit; text-align: left; color: var(--l-ink); background: var(--l-card); border: 2px solid var(--l-line); border-radius: 18px; box-shadow: 0 4px 0 var(--l-line); padding: 16px 18px; cursor: pointer; transition: transform 90ms ease, box-shadow 90ms ease, border-color 150ms ease, background-color 150ms ease; }
+[data-ui] .tile:hover { background: #f7f7f8; }
+[data-ui] .tile:active { transform: translateY(4px); box-shadow: 0 0 0 var(--l-line); }
+[data-ui] .tile[aria-pressed=true], [data-ui] .tile[aria-checked=true] { border-color: var(--l-acc); background: var(--l-acc-soft); box-shadow: 0 4px 0 var(--l-acc); }
+[data-ui] .tile:focus-visible { outline: 3px solid var(--l-ink); outline-offset: 3px; }
+
+/* screen 1: levels */
+[data-ui] .levels3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+[data-ui] .lvl { display: grid; gap: 6px; padding: 20px 18px 18px; }
+[data-ui] .lvl b { font-size: 30px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+[data-ui] .lvl small { font-size: 15px; color: var(--l-mute); font-weight: 600; }
+[data-ui] .lvl .badge { justify-self: start; font-size: 13px; font-weight: 800; color: var(--l-acc-deep); background: var(--l-acc-soft); border-radius: 999px; padding: 3px 10px; }
+[data-ui] .lvl[aria-checked=true] .badge { background: var(--l-card); }
+
+/* screen 2: the mascot speaks the task */
+[data-ui] .talk { display: grid; grid-template-columns: 124px minmax(0, 1fr); gap: 14px; align-items: end; }
+[data-ui] .mascot { width: 124px; height: auto; display: block; }
+[data-ui] .mascot__head { fill: var(--l-ink); }
+[data-ui] .mascot__waves path { fill: none; stroke: var(--l-acc); stroke-width: 6; stroke-linecap: round; opacity: 0.25; }
+[data-ui] .is-talking .mascot__waves path { animation: wave 900ms ease-in-out infinite; }
+[data-ui] .is-talking .mascot__waves path:nth-child(2) { animation-delay: 150ms; }
+[data-ui] .is-talking .mascot__waves path:nth-child(3) { animation-delay: 300ms; }
+@keyframes wave { 50% { opacity: 1; } }
+[data-ui] .bubble { position: relative; border: 2px solid var(--l-line); border-radius: 20px; padding: 16px 18px; margin-bottom: 26px; display: flex; gap: 12px; align-items: flex-start; }
+[data-ui] .bubble::before { content: ""; position: absolute; left: -11px; bottom: 18px; width: 18px; height: 18px; background: var(--l-card); border-left: 2px solid var(--l-line); border-bottom: 2px solid var(--l-line); transform: rotate(45deg); }
+[data-ui] .bubble p { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; }
+[data-ui] .spk { flex: none; width: 44px; height: 44px; border-radius: 14px; border: 0; background: var(--l-acc); box-shadow: 0 4px 0 var(--l-acc-deep); display: grid; place-items: center; cursor: pointer; transition: transform 90ms ease, box-shadow 90ms ease; }
+[data-ui] .spk:active { transform: translateY(4px); box-shadow: 0 0 0 var(--l-acc-deep); }
+[data-ui] .spk svg { width: 22px; height: 22px; fill: #fff; }
+[data-ui] .spk[hidden] { display: none; }
+[data-ui] .how { color: var(--l-mute); }
+[data-ui] .chips { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; margin: 0; padding: 0; }
+[data-ui] .chip-w { padding: 10px 14px; font-weight: 700; }
+[data-ui] .label { font-weight: 800; font-size: 15px; color: var(--l-mute); }
+[data-ui] details.ex { border: 2px solid var(--l-line); border-radius: 18px; }
+[data-ui] details.ex summary { cursor: pointer; list-style: none; padding: 14px 18px; font-weight: 800; display: flex; justify-content: space-between; gap: 1rem; }
+[data-ui] details.ex summary::-webkit-details-marker { display: none; }
+[data-ui] details.ex summary::after { content: "+"; font-size: 22px; line-height: 1; color: var(--l-acc); transition: transform 200ms ease; }
+[data-ui] details.ex[open] summary::after { transform: rotate(45deg); }
+[data-ui] .ex__body { padding: 0 18px 18px; display: grid; gap: 12px; }
+[data-ui] .ex__row { display: flex; gap: 12px; align-items: flex-start; }
+
+/* screens 3 and 4: the ring timer */
+[data-ui] .ring-wrap { display: grid; justify-items: center; gap: 18px; padding-top: 6px; }
+[data-ui] .ring { position: relative; width: min(240px, 62vw); aspect-ratio: 1; }
+[data-ui] .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+[data-ui] .ring circle { fill: none; stroke-width: 16; }
+[data-ui] .ring .trk { stroke: #e7e8eb; }
+[data-ui] .ring .val { stroke: var(--l-acc); stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+[data-ui] .ring__num { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 800; font-size: 56px; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+[data-ui] .ring__num .colon { margin-inline: -0.1em; }
+[data-ui] .talk--hello { margin-bottom: -4px; }
+[data-ui] .talk--hello .mascot__waves path { opacity: 1; }
+[data-ui] .talk--mini { grid-template-columns: 56px auto; align-items: center; justify-content: center; }
+[data-ui] .talk--mini .mascot { width: 56px; }
+[data-ui] .talk--mini .tip { text-align: left; font-weight: 700; color: var(--l-ink); }
+[data-ui] .tip { text-align: center; color: var(--l-mute); max-width: 36ch; }
+[data-ui] .row-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+[data-ui] .note { font-size: 14px; color: var(--l-mute); text-align: center; }
+
+/* screen 5: self-check tiles */
+[data-ui] .crit { display: grid; gap: 12px; }
+[data-ui] .crit .tile { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 14px; align-items: center; font-weight: 600; }
+[data-ui] .box { width: 30px; height: 30px; border-radius: 9px; border: 2px solid var(--l-line-deep); display: grid; place-items: center; background: var(--l-card); transition: background-color 150ms ease, border-color 150ms ease, transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+[data-ui] .tile[aria-checked=true] .box { background: var(--l-acc); border-color: var(--l-acc); transform: scale(1.08); }
+[data-ui] .box svg { width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+[data-ui] .tile[aria-checked=true] .box svg { opacity: 1; }
+
+/* bottom bar and feedback sheet */
+[data-ui] .l-foot { border-top: 2px solid var(--l-line); padding: 18px clamp(20px, 5vw, 56px) 22px; display: flex; justify-content: space-between; align-items: center; gap: 14px; background: var(--l-card); transition: background-color 250ms ease, border-color 250ms ease; }
+[data-ui] .l-foot .chunk--main { min-width: 170px; }
+[data-ui] .l-foot.is-good { background: var(--l-acc-soft); border-color: var(--l-acc-soft); }
+[data-ui] .l-foot.is-meh { background: #eceef1; border-color: #eceef1; }
+[data-ui] .fb { display: flex; align-items: center; gap: 14px; min-width: 0; }
+[data-ui] .fb[hidden] { display: none; }
+[data-ui] .fb__icon { width: 52px; height: 52px; border-radius: 50%; background: var(--l-card); display: grid; place-items: center; flex: none; animation: pop 420ms cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+[data-ui] .fb__icon svg { width: 26px; height: 26px; fill: none; stroke: var(--l-acc); stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
+[data-ui] .fb__t { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--l-acc-deep); line-height: 1.1; }
+[data-ui] .is-meh .fb__t { color: var(--l-ink); }
+[data-ui] .fb__s { font-size: 15px; color: var(--l-ink); }
+@keyframes pop { from { transform: scale(0.4); opacity: 0; } }
+[data-ui] .xp-fly { position: absolute; white-space: nowrap; transform: translateX(-30%); font-weight: 800; color: var(--l-acc); pointer-events: none; animation: fly 1100ms ease-out both; }
+@keyframes fly { to { transform: translate(-30%, 40px); opacity: 0; } }
+@media (max-width: 560px) {
+  [data-ui].lesson { border-radius: 22px; min-height: 600px; font-size: 17px; }
+  [data-ui] .levels3 { grid-template-columns: 1fr; }
+  [data-ui] .lvl { grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; padding: 14px 16px; }
+  [data-ui] .talk { grid-template-columns: 84px minmax(0, 1fr); }
+  [data-ui] .mascot { width: 84px; }
+  [data-ui] .bubble p { font-size: 19px; }
+  [data-ui] .l-foot { flex-wrap: wrap; }
+  [data-ui] .l-foot .chunk--main { flex: 1; }
+  [data-ui] .fb { flex-basis: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { [data-ui] .screen, [data-ui] .fb__icon { animation: none; } }
+
+/* ---------- outil (capabilities at poster scale) ---------- */
+.outil { background: var(--accent); color: var(--accent-ink); padding-block: clamp(8rem, 20vh, 14rem); }
+.outil ::selection { background: var(--accent-ink); color: var(--accent); }
+.caps { grid-column: 1 / 13; display: grid; }
+.cap { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-items: first baseline; padding-block: 0.12em; }
+.cap__name { grid-column: 1 / 9; font-size: var(--step-mega); font-weight: 800; letter-spacing: -0.045em; line-height: 1; transition: color var(--t-hover) ease; }
+.cap__desc { grid-column: 9 / 13; font-size: var(--step-body); line-height: 1.4; max-width: 34ch; }
+.cap--head .cap__name { color: var(--accent-soft); }
+@media (hover: hover) and (pointer: fine) {
+  .caps:hover .cap:not(.cap--head):not(:hover) .cap__name { color: var(--accent-soft); }
+}
+
+
+/* ---------- côté professeur (the teacher's screen) ---------- */
+.prof { background: var(--surface); padding-block: var(--section); }
+.prof__intro { grid-column: 1 / 5; display: grid; gap: 28px; align-content: start; }
+.prof__intro h2 { font-size: var(--step-mega); }
+.prof__intro p { max-width: 34ch; }
+.prof__shot { grid-column: 5 / 13; min-width: 0; }
+.prof__note { margin-top: 12px; color: var(--muted); font-size: var(--step-small); }
+[data-ui].desk { background: #f6f6f7; color: #18191b; border-radius: 10px; overflow: hidden; font-size: 14px; line-height: 1.35; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35); }
+[data-ui] .dk-bar { display: flex; align-items: center; gap: 14px; background: #dcdde0; padding: 10px 14px; }
+[data-ui] .dk-dots { display: flex; gap: 6px; }
+[data-ui] .dk-dots i { width: 10px; height: 10px; border-radius: 50%; background: #b9bbc0; }
+[data-ui] .dk-url { background: #f6f6f7; border-radius: 6px; padding: 3px 12px; font-size: 12px; color: #54565b; }
+[data-ui] .dk-body { padding: 20px 22px 18px; overflow-x: auto; }
+[data-ui] .dk-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+[data-ui] .dk-k { font-size: 12px; color: #54565b; }
+[data-ui] .dk-t { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; }
+[data-ui] .dk-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+[data-ui] .dk-stats span { background: #e6e7e9; border-radius: 999px; padding: 4px 12px; font-size: 13px; }
+[data-ui] .dk-stats .warn { background: #ffd9cc; color: #8a2205; }
+[data-ui] table { width: 100%; border-collapse: collapse; min-width: 560px; font-variant-numeric: tabular-nums; }
+[data-ui] th { text-align: left; font-weight: 600; font-size: 12px; color: #54565b; padding: 8px 8px; border-bottom: 1px solid #d2d3d6; }
+[data-ui] td { padding: 9px 8px; border-bottom: 1px solid #e3e4e6; }
+[data-ui] td:first-child { font-weight: 600; }
+[data-ui] .dots { display: inline-flex; gap: 4px; }
+[data-ui] .dots i { width: 10px; height: 10px; border-radius: 50%; border: 2px solid #ff4a1f; }
+[data-ui] .dots i.on { background: #ff4a1f; }
+[data-ui] .chip { display: inline-block; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 600; background: #e6e7e9; color: #3a3c40; }
+[data-ui] .chip.prio { background: #ff4a1f; color: #18191b; }
+[data-ui] .chip.none { background: transparent; color: #626469; border: 1px solid #c9cacd; }
+[data-ui] tr.is-row { transition: background-color 160ms ease; }
+[data-ui] tr.is-row:hover { background: #ececee; }
+[data-ui] .dk-foot { margin-top: 12px; font-size: 12px; color: #6a6c71; }
+
+/* ---------- textes (names as one sentence) ---------- */
+.textes { background: var(--bg); padding-block: clamp(7rem, 12vw, 10rem); }
+.textes__sent { grid-column: 1 / 11; font-size: var(--step-lead); line-height: 1.3; letter-spacing: -0.03em; font-weight: 600; max-width: 44ch; }
+.textes__sent a { color: var(--muted); text-decoration: none; transition: color 400ms ease; }
+.textes__sent a.is-lit, .textes__sent a:hover, .textes__sent a:focus-visible { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 3px; }
+.textes__also { grid-column: 1 / 8; margin-top: 40px; max-width: 60ch; }
+
+/* ---------- feuille de route (line-up) ---------- */
+.route { background: var(--field); color: var(--field-ink); padding-block: var(--section); }
+.route ::selection { background: var(--field-ink); color: var(--field); }
+.route h2 { font-size: var(--step-mega); margin-bottom: clamp(24px, 4vw, 48px); }
+.lineup { width: 100%; border-collapse: collapse; font-size: clamp(1.125rem, 0.6rem + 1.3vw, 1.875rem); font-size: var(--step-lead); }
+.lineup th, .lineup td { text-align: left; font-weight: 400; padding: 0; height: 1.6em; vertical-align: baseline; }
+.lineup td:last-child { text-align: right; }
+.lineup .col-a { width: 38%; } .lineup .col-b { width: 20%; } .lineup .col-c { width: 20%; }
+.lineup tbody th { color: var(--accent-deep); font-weight: 600; padding-top: 56px; padding-bottom: 12px; }
+.lineup tbody:first-of-type th { padding-top: 0; }
+.lineup .note td { color: var(--field-muted); }
+
+/* ---------- about (two columns, highlighted words) ---------- */
+.about { background: var(--bg); padding-block: clamp(6rem, 10vw, 9rem); }
+.about__text { columns: 2; column-gap: clamp(32px, 4vw, 64px); font-size: var(--step-lead); line-height: 1.28; color: var(--ink); letter-spacing: -0.02em; }
+.about__text strong { font-weight: 800; }
+.hl { color: var(--accent-ink); padding: 0 0.1em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.hl--a { background: var(--accent); } .hl--b { background: var(--field); } .hl--c { background: var(--mark); }
+.about__end { display: inline; }
+.about__end a { color: var(--accent-ink); background: var(--accent); padding: 0 0.15em; text-decoration: none; font-weight: 600; transition: background-color var(--t-hover) ease; }
+.about__end a:hover { background: var(--ink); }
+
+/* ---------- footer ---------- */
+.foot { background: var(--field); color: var(--field-ink); min-height: 100svh; display: grid; grid-template-rows: auto 1fr auto; padding-block: 40px 20px; }
+.foot ::selection { background: var(--field-ink); color: var(--field); }
+.foot__cols { row-gap: 40px; font-size: var(--step-small); line-height: 1.5; }
+.foot__col { grid-column: span 2; display: grid; gap: 4px; align-content: start; color: var(--field-muted); }
+.foot__col--wide { grid-column: span 5; } .foot__col--contact { grid-column: span 3; }
+.foot__col h2 { font-size: inherit; letter-spacing: -0.01em; line-height: 1.45; color: var(--field-ink); font-weight: 600; }
+.foot__col ul { display: grid; gap: 4px; list-style: none; padding: 0; }
+.foot__col a { color: var(--field-ink); text-decoration-color: var(--accent); }
+.foot__col a:hover { color: var(--accent-deep); }
+.copy { display: inline-flex; align-items: center; gap: 0.5em; margin-top: 6px; background: var(--field-ink); color: var(--field); border: 0; font: inherit; font-weight: 600; padding: 0.55em 0.9em; cursor: pointer; justify-self: start; transition: transform var(--t-press) var(--ease-out), background-color var(--t-hover) ease; }
+.copy:hover { background: var(--accent-deep); }
+.copy:active { transform: scale(0.97); }
+.email { color: var(--field-ink); font-weight: 600; user-select: all; overflow-wrap: anywhere; }
+.foot__mark { display: inline-block; font-variant-numeric: normal; font-weight: 800; letter-spacing: -0.06em; line-height: 1; white-space: nowrap; font-size: 19.5vw; margin-left: -0.04em; transform-origin: 50% 100%; }
+.foot__legal { font-size: var(--step-small); color: var(--field-muted); margin-top: 20px; }
+
+/* ---------- motion ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .hero__copy > * { animation: rise 900ms var(--ease-out) both; }
+  .hero__copy > :nth-child(2) { animation-delay: 90ms; }
+  .hero__word { animation: rise-word 1100ms var(--ease-out) 120ms both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
+  @keyframes rise-word { from { transform: translateY(12%); } }
+  @supports (animation-timeline: view()) {
+    .hero__word { animation: rise-word 1100ms var(--ease-out) 120ms both, shrink linear both; animation-timeline: auto, view(); animation-range: normal, exit 0% exit 100%; }
+    @keyframes shrink { to { scale: 0.93; } }
+    .in { animation: enter linear both; animation-timeline: view(); animation-range: entry 5% entry 60%; }
+    .in.d1 { animation-range: entry 12% entry 70%; }
+    .in.d2 { animation-range: entry 20% entry 80%; }
+    .in.d3 { animation-range: entry 28% entry 90%; }
+    @keyframes enter { from { opacity: 0; transform: translateY(28px); } }
+    .foot__mark { animation: grow linear both; animation-timeline: view(); animation-range: entry 0% cover 50%; }
+    @keyframes grow { from { scale: 0.94; } }
+  }
+}
+
+/* ---------- phone ---------- */
+@media (max-width: 860px) {
+  .prof__intro, .prof__shot, .essai__head h2, .essai__head p { grid-column: 1 / -1; }
+  .levels { width: 100%; }
+  .level { flex: 1; }
+  .timer__digits { font-size: 28vw; }
+  .prof__shot { margin-top: 40px; }
+  .constat h2, .ledger, .calcul__head h2, .calcul__head p, .semaine__intro, .slip-wrap, .textes__sent, .textes__also { grid-column: 1 / -1; }
+  .constat h2 { position: static; font-size: 28px; font-size: clamp(1.75rem, 1rem + 4vw, 2.5rem); margin-bottom: 36px; }
+  .ledger { row-gap: 28px; }
+  .ledger__row { font-size: clamp(3rem, 13vw, 5rem); grid-template-columns: 1.25em 1.05em minmax(0, 1fr); }
+  .ledger__cap { padding-left: 12px; font-size: 15px; }
+  .controls { grid-template-columns: 1fr 1fr; row-gap: 20px; }
+  .spec { grid-column: 1 / -1; }
+  .spec + .spec { margin-top: 0; }
+  .spec__box { height: clamp(150px, 34vw, 260px); }
+  .spec__cap { padding-bottom: 28px; }
+  .spec__fig { font-size: 44vw; }
+  .spec--with { background: var(--field-ink); color: var(--field); padding: 20px var(--margin) 0; margin-inline: calc(-1 * max(var(--margin), env(safe-area-inset-left, 0px))); }
+  .spec--with .spec__cap span { color: var(--muted); }
+  .spec--with .spec__fig { color: var(--accent); }
+  .specimens { margin-top: 48px; row-gap: 32px; }
+  .slip-wrap { margin-top: 48px; width: 100%; }
+  [data-ui].phone { margin-inline: auto; }
+  .cap { grid-template-columns: 1fr; padding-bottom: 28px; padding-top: 0; }
+  .cap__name { grid-column: 1; font-size: 11vw; }
+  .cap__desc { grid-column: 1; padding-left: var(--margin); margin-top: 8px; font-size: 16px; }
+  .caps:hover .cap .cap__name { color: inherit; }
+  .lineup, .lineup tbody, .lineup tr, .lineup th, .lineup td { display: block; height: auto; }
+  .lineup thead { display: none; }
+  .lineup tr { display: grid; grid-template-columns: auto auto minmax(0, 1fr); column-gap: 10px; padding-bottom: 18px; }
+  .lineup td { width: auto !important; }
+  .lineup td.col-a { grid-column: 1 / -1; font-size: 22px; line-height: 1.25; }
+  .lineup td.col-b, .lineup td.col-c, .lineup td.col-d { font-size: 15px; color: var(--field-muted); margin-top: 4px; }
+  .lineup td.col-c::before { content: "· "; }
+  .lineup td.col-d { text-align: right; }
+  .lineup tbody th { padding-top: 32px; font-size: 22px; position: sticky; top: 0; background: var(--field); padding-bottom: 12px; }
+  .about__text { columns: 1; text-align: left; font-size: 20px; line-height: 1.3; hyphens: manual; }
+  .foot__col, .foot__col--wide, .foot__col--contact { grid-column: span 6; }
+  .foot__col--wide { grid-column: 1 / -1; }
+  .foot__mark { font-size: 19.5vw; }
+}
+@media (max-width: 700px) {
+  .nav { display: none; }
+  .nav.is-open { display: grid; gap: 14px; position: absolute; right: max(var(--margin), env(safe-area-inset-right, 0px)); top: 64px; background: var(--surface); padding: 18px 22px; z-index: 5; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45); } /* taste-skill-ignore: open menu overlay */
+  .menu-btn { display: inline-block; }
+  .hero__copy { padding-top: 40px; gap: 22px; padding-bottom: 156px; }
+  .hero__copy p { font-size: 18px; line-height: 1.35; }
+  .hero__copy .btn { font-size: 15px; padding: 0.85em 1em; }
+  .hero__word { font-size: 37vw; margin-left: -5vw; }
+  .foot__col, .foot__col--wide, .foot__col--contact { grid-column: 1 / -1; }
+}
+@media (max-width: 420px) {
+  .controls { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div lang="fr">
+<div class="bar"></div>
+
+<header class="hero" id="haut">
+  <div class="wrap">
+    <div class="hero__top">
+      <a class="wordmark" href="#haut">Speak Lab</a>
+      <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav">Menu</button>
+      <nav class="nav" id="nav" aria-label="Sommaire">
+        <a href="#constat">Le constat</a>
+        <a href="#calcul">Le calcul</a>
+        <a href="#essayer">Essayer</a>
+        <a href="#outil">L'outil</a>
+        <a href="#sources">Sources</a>
+      </nav>
+    </div>
+    <div class="hero__copy">
+      <p><strong>Speak Lab</strong> est un outil d'oral en anglais pour le collège et le lycée, piloté par le professeur. Pour que chaque élève parle, pas seulement les volontaires.</p>
+      <a class="btn" href="#calcul">Calculer le temps de parole
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15M5 12l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg>
+      </a>
+    </div>
+  </div>
+  <h1 class="hero__word" aria-label="Speak Lab">speak</h1>
+  <canvas class="hero__gl" id="hero-gl" aria-hidden="true"></canvas>
+</header>
+
+<main>
+<section class="constat" id="constat" aria-labelledby="constat-h">
+  <div class="wrap grid">
+    <h2 id="constat-h" class="in"><span class="soft">Ce qui manque,</span> <span>c'est l'oral.</span></h2>
+    <div class="ledger">
+      <div class="ledger__row in"><span class="ledger__whole">75</span><span class="ledger__dec"></span>
+        <p class="ledger__cap">% des élèves de fin de 3<sup>e</sup> ne produisent pas une phrase globalement correcte à l'oral en anglais. <a href="https://www.cnesco.fr/wp-content/uploads/2019/04/190410_Dossier_synthese_Langues_.pdf">CNESCO, 2019</a></p></div>
+      <div class="ledger__row in"><span class="ledger__whole">62</span><span class="ledger__dec"></span>
+        <p class="ledger__cap">% atteignent le niveau A2 en compréhension de l'oral en fin de 3<sup>e</sup>. <a href="https://www.education.gouv.fr/depp/anglais-en-fin-d-ecole-et-de-college-une-hausse-du-niveau-des-eleves-en-comprehension-de-l-oral-en-452550">DEPP, Cedre 2022</a></p></div>
+      <div class="ledger__row in"><span class="ledger__whole">42</span><span class="ledger__dec"></span>
+        <p class="ledger__cap">% atteignent le niveau A2 en compréhension de l'écrit. <a href="https://www.education.gouv.fr/depp/anglais-en-fin-d-ecole-et-de-college-une-hausse-du-niveau-des-eleves-en-comprehension-de-l-oral-en-452550">DEPP, Cedre 2022</a></p></div>
+      <div class="ledger__row in"><span class="ledger__whole">26</span><span class="ledger__dec"></span>
+        <p class="ledger__cap">% atteignaient le niveau attendu à l'écoute en 2011, contre 46&nbsp;% en moyenne européenne. <a href="https://www.cnesco.fr/wp-content/uploads/2019/04/190410_Dossier_synthese_Langues_.pdf">Enquête ESLC, CNESCO</a></p></div>
+      <div class="ledger__row in"><span class="ledger__whole">25</span><span class="ledger__dec">,7</span>
+        <p class="ledger__cap">élèves par classe en moyenne au collège, 30,2 au lycée général. <a href="https://www.education.gouv.fr/sites/default/files/document/depp-ni-2026-38pdf-519892.pdf">DEPP, 2026</a></p></div>
+      <div class="ledger__row in"><span class="ledger__whole">11</span><span class="ledger__dec">,7</span>
+        <p class="ledger__cap">% des absences courtes remplacées au collège en 2024-2025. <a href="https://www.banquedesterritoires.fr/au-college-le-temps-denseignement-perdu-est-source-diniquite-notamment-territoriale">Cour des comptes, 2025</a></p></div>
+    </div>
+  </div>
+</section>
+
+<section class="calcul" id="calcul" aria-labelledby="calcul-h">
+  <div class="wrap">
+    <div class="grid calcul__head">
+      <h2 id="calcul-h" class="in">Deux minutes, au mieux</h2>
+      <p class="in d1">Dans un cours de 55 minutes avec 26 élèves, chacun parle très peu, même quand le professeur se tait. Réglez les curseurs avec les chiffres de votre classe&nbsp;: le calcul compare une année de parole en classe et la même année avec des enregistrements à la maison.</p>
+      <form class="controls" id="calc" onsubmit="return false">
+        <div class="control"><label for="c-eleves">Élèves par classe <output id="o-eleves" for="c-eleves">26</output></label><input type="range" id="c-eleves" min="12" max="36" step="1" value="26"></div>
+        <div class="control"><label for="c-heures">Heures par semaine <output id="o-heures" for="c-heures">3</output></label><input type="range" id="c-heures" min="1" max="5" step="0.5" value="3"></div>
+        <div class="control"><label for="c-part">Part du cours où les élèves parlent <output id="o-part" for="c-part">40&nbsp;%</output></label><input type="range" id="c-part" min="10" max="80" step="5" value="40"></div>
+        <div class="control"><label for="c-taches">Enregistrements par semaine <output id="o-taches" for="c-taches">2</output></label><input type="range" id="c-taches" min="0" max="5" step="1" value="2"></div>
+      </form>
+      <p class="hyp">Estimation, pas une mesure&nbsp;: 36 semaines de cours, des séances de 55 minutes, un élève parle à la fois, chaque enregistrement dure 3 minutes. Les hypothèses sont modifiables.</p>
+    </div>
+    <figure class="room" id="room" hidden>
+      <figcaption class="room__cap">
+        <span class="room__key"><span><i class="k-ink"></i>Minutes en classe</span><span><i class="k-acc"></i>Minutes ajoutées par Speak Lab</span></span>
+        <span>Une colonne par élève, à la moyenne de la classe. Faites glisser pour tourner la salle.</span>
+      </figcaption>
+      <div class="room__stage" id="room-stage" aria-hidden="true"></div>
+    </figure>
+    <div class="grid specimens" aria-live="polite">
+      <div class="spec">
+        <div class="spec__box"><span class="spec__fig" id="f-classe">91</span></div>
+        <p class="spec__cap">En classe <span>minutes de parole par élève et par an, soit <b id="f-cours">0,8</b> minute par cours.</span></p>
+      </div>
+      <div class="spec spec--with">
+        <div class="spec__box"><span class="spec__fig" id="f-avec">307</span></div>
+        <p class="spec__cap">Avec Speak Lab <span>minutes de parole par élève et par an, avec <b id="f-taches">2</b> enregistrements de 3 minutes par semaine.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="semaine" id="semaine" aria-labelledby="semaine-h">
+  <div class="wrap grid">
+    <div class="semaine__intro">
+      <h2 id="semaine-h" class="in">Une semaine type</h2>
+      <p class="in d1">Le professeur garde la main. L'outil prolonge la séquence à la maison, en tâches courtes.</p>
+      <div data-ui class="phone in d2" aria-label="Maquette de l'écran élève">
+        <div class="ph-top"><span>4<sup>e</sup>&nbsp;B · Anglais</span><span class="num">17:42</span></div>
+        <p class="ph-seq">Séquence 3 · Dream schools</p>
+        <p class="ph-task">Describe your dream school in 90 seconds.</p>
+        <div class="ph-model"><span class="ph-play"><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span><span>Écouter le modèle · accent écossais</span></div>
+        <canvas id="wave" width="528" height="128" aria-hidden="true"></canvas>
+        <div class="ph-time"><span id="ph-clock">00:00</span><span>01:30</span></div>
+        <button class="ph-rec" id="ph-rec" type="button" aria-pressed="false" aria-label="Démarrer l'enregistrement de démonstration"><span></span></button>
+        <ul class="ph-crit">
+          <li class="ok">I would like… / There would be…</li>
+          <li class="ok">Trois raisons, avec <em>because</em></li>
+          <li>Accent de mot&nbsp;: <b>SCHOOL</b>, <b>DREAM</b></li>
+        </ul>
+      </div>
+      <p class="phone-note">Maquette de l'écran élève, données d'exemple.</p>
+    </div>
+    <div class="slip-wrap in d1">
+      <div class="slip">
+        <p class="slip__title">Séquence 3, semaine 2</p>
+        <p class="slip__sub">4<sup>e</sup>&nbsp;B · 26 élèves · exemple</p>
+        <h3>Lundi</h3>
+        <div class="slip__row"><span class="slip__what">Le professeur publie la tâche</span><span class="slip__dots"></span><span class="slip__time">5 min</span></div>
+        <div class="slip__row"><span class="slip__what"><em>Describe your dream school</em></span><span class="slip__dots"></span><span class="slip__time">1 min 30</span></div>
+        <h3>Mardi à jeudi</h3>
+        <div class="slip__row"><span class="slip__what">L'élève écoute le modèle</span><span class="slip__dots"></span><span class="slip__time">1 min</span></div>
+        <div class="slip__row"><span class="slip__what">Il s'enregistre, se réécoute, recommence</span><span class="slip__dots"></span><span class="slip__time">3 min</span></div>
+        <div class="slip__row"><span class="slip__what">Révision espacée du vocabulaire</span><span class="slip__dots"></span><span class="slip__time">10 min</span></div>
+        <h3>Vendredi</h3>
+        <div class="slip__row"><span class="slip__what">Le professeur écoute, coche trois critères</span><span class="slip__dots"></span><span class="slip__time">1 min 30 / élève</span></div>
+        <div class="slip__row"><span class="slip__what">Retour collectif en classe</span><span class="slip__dots"></span><span class="slip__time">10 min</span></div>
+        <div class="slip__total"><span>Chaque élève a parlé</span><span>+ 3 min</span></div>
+      </div>
+      <svg class="slip__edge" viewBox="0 0 480 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0 L480 0 L472.0 14 L464.0 0 L456.0 14 L448.0 0 L440.0 14 L432.0 0 L424.0 14 L416.0 0 L408.0 14 L400.0 0 L392.0 14 L384.0 0 L376.0 14 L368.0 0 L360.0 14 L352.0 0 L344.0 14 L336.0 0 L328.0 14 L320.0 0 L312.0 14 L304.0 0 L296.0 14 L288.0 0 L280.0 14 L272.0 0 L264.0 14 L256.0 0 L248.0 14 L240.0 0 L232.0 14 L224.0 0 L216.0 14 L208.0 0 L200.0 14 L192.0 0 L184.0 14 L176.0 0 L168.0 14 L160.0 0 L152.0 14 L144.0 0 L136.0 14 L128.0 0 L120.0 14 L112.0 0 L104.0 14 L96.0 0 L88.0 14 L80.0 0 L72.0 14 L64.0 0 L56.0 14 L48.0 0 L40.0 14 L32.0 0 L24.0 14 L16.0 0 L8.0 14 L0.0 0Z"/></svg>
+    </div>
+  </div>
+</section>
+
+<section class="essai" id="essayer" aria-labelledby="essai-h">
+  <div class="wrap">
+    <div class="grid essai__head">
+      <h2 id="essai-h" class="in">Essayer une tâche</h2>
+      <p class="in d1">Choisissez un niveau, préparez-vous trente secondes, puis parlez à voix haute pendant que le minuteur tourne. Ensuite, cochez ce que vous avez réussi. Rien n'est enregistré.</p>
+    </div>
+    <div class="lesson-wrap in d1">
+      <div data-ui class="lesson" id="lesson" aria-label="Exercice d'oral">
+        <div class="l-top">
+          <button class="l-close" id="l-restart" type="button" aria-label="Recommencer depuis le début"><svg viewBox="0 0 18 18"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+          <div class="l-bar" role="progressbar" aria-label="Progression" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" id="l-bar"><i id="l-fill"></i></div>
+          <span class="l-xp" aria-label="Points"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg><span id="l-xp">0</span></span>
+        </div>
+        <div class="l-body" aria-live="polite">
+          <p class="l-step-name" id="l-step">Étape 1 sur 5</p>
+
+          <section class="screen" data-screen="0">
+            <h3 class="l-title">Choisis ton niveau</h3>
+            <div class="talk talk--hello">
+              <svg class="mascot" viewBox="0 0 150 128" aria-hidden="true"><path class="mascot__head" d="M 30.0 124.0 C 31.0 112.0 28.0 100.0 26.0 92.0 C 14.0 84.0 5.0 68.0 6.0 50.0 C 7.0 22.0 26.0 4.0 48.0 4.0 C 72.0 4.0 85.0 16.0 86.0 30.0 C 87.0 36.0 87.0 41.0 88.0 44.0 C 91.0 50.0 100.0 57.0 100.0 62.0 C 100.0 66.0 95.0 67.0 92.0 67.0 C 94.0 68.5 95.0 71.0 95.0 73.0 L 90.5 74.5 L 94.0 77.0 C 95.0 80.0 93.0 83.0 90.0 84.0 C 92.0 87.0 90.0 91.0 86.0 92.0 C 80.0 94.0 70.0 94.0 66.0 97.0 C 64.0 106.0 66.0 118.0 70.0 124.0 Z"/><g class="mascot__waves" transform="translate(104 74)"><path d="M0 -10 A10 10 0 0 1 0 10"/><path d="M8 -20 A22 22 0 0 1 8 20"/><path d="M16 -30 A34 34 0 0 1 16 30"/></g></svg>
+              <div class="bubble"><p>Salut&nbsp;! Choisis ton niveau, puis on parle anglais.</p></div>
+            </div>
+            <div class="levels3" role="radiogroup" aria-label="Niveau">
+              <button class="tile lvl" role="radio" aria-checked="false" data-level="6e" type="button"><b>6<sup>e</sup></b><small>45 secondes</small><span class="badge">A1+</span></button>
+              <button class="tile lvl" role="radio" aria-checked="false" data-level="4e" type="button"><b>4<sup>e</sup></b><small>1 min 30</small><span class="badge">A2+</span></button>
+              <button class="tile lvl" role="radio" aria-checked="false" data-level="2de" type="button"><b>Seconde</b><small>2 minutes</small><span class="badge">B1</span></button>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="1" hidden>
+            <h3 class="l-title">Écoute la consigne</h3>
+            <div class="talk" id="talk">
+              <svg class="mascot" viewBox="0 0 150 128" aria-hidden="true"><path class="mascot__head" d="M 30.0 124.0 C 31.0 112.0 28.0 100.0 26.0 92.0 C 14.0 84.0 5.0 68.0 6.0 50.0 C 7.0 22.0 26.0 4.0 48.0 4.0 C 72.0 4.0 85.0 16.0 86.0 30.0 C 87.0 36.0 87.0 41.0 88.0 44.0 C 91.0 50.0 100.0 57.0 100.0 62.0 C 100.0 66.0 95.0 67.0 92.0 67.0 C 94.0 68.5 95.0 71.0 95.0 73.0 L 90.5 74.5 L 94.0 77.0 C 95.0 80.0 93.0 83.0 90.0 84.0 C 92.0 87.0 90.0 91.0 86.0 92.0 C 80.0 94.0 70.0 94.0 66.0 97.0 C 64.0 106.0 66.0 118.0 70.0 124.0 Z"/><g class="mascot__waves" transform="translate(104 74)"><path d="M0 -10 A10 10 0 0 1 0 10"/><path d="M8 -20 A22 22 0 0 1 8 20"/><path d="M16 -30 A34 34 0 0 1 16 30"/></g></svg>
+              <div class="bubble"><button class="spk" id="spk-prompt" type="button" aria-label="Écouter la consigne" hidden><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg></button><p lang="en" id="l-prompt">Describe your dream school.</p></div>
+            </div>
+            <p class="how" id="l-how"></p>
+            <p class="label">Mots utiles</p>
+            <ul class="chips" lang="en" id="l-words"></ul>
+            <details class="ex"><summary>Voir un exemple de réponse</summary>
+              <div class="ex__body"><div class="ex__row"><button class="spk" id="spk-model" type="button" aria-label="Écouter l'exemple" hidden><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg></button><p lang="en" id="l-model"></p></div></div>
+            </details>
+          </section>
+
+          <section class="screen" data-screen="2" hidden>
+            <h3 class="l-title">Prépare-toi</h3>
+            <div class="ring-wrap">
+              <div class="ring"><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="trk" cx="100" cy="100" r="84"/><circle class="val" id="prep-ring" cx="100" cy="100" r="84"/></svg><div class="ring__num" id="prep-num">30</div></div>
+              <p class="tip">Pense à trois idées. Dis-les dans ta tête avec les mots utiles.</p>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="3" hidden>
+            <h3 class="l-title">À toi de parler&nbsp;!</h3>
+            <div class="ring-wrap">
+              <div class="ring" id="speak-ring-box"><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="trk" cx="100" cy="100" r="84"/><circle class="val" id="speak-ring" cx="100" cy="100" r="84"/></svg><div class="ring__num"><span id="speak-num">1:30</span></div></div>
+              <div class="talk talk--mini" id="speak-mascot"><svg class="mascot" viewBox="0 0 150 128" aria-hidden="true"><path class="mascot__head" d="M 30.0 124.0 C 31.0 112.0 28.0 100.0 26.0 92.0 C 14.0 84.0 5.0 68.0 6.0 50.0 C 7.0 22.0 26.0 4.0 48.0 4.0 C 72.0 4.0 85.0 16.0 86.0 30.0 C 87.0 36.0 87.0 41.0 88.0 44.0 C 91.0 50.0 100.0 57.0 100.0 62.0 C 100.0 66.0 95.0 67.0 92.0 67.0 C 94.0 68.5 95.0 71.0 95.0 73.0 L 90.5 74.5 L 94.0 77.0 C 95.0 80.0 93.0 83.0 90.0 84.0 C 92.0 87.0 90.0 91.0 86.0 92.0 C 80.0 94.0 70.0 94.0 66.0 97.0 C 64.0 106.0 66.0 118.0 70.0 124.0 Z"/><g class="mascot__waves" transform="translate(104 74)"><path d="M0 -10 A10 10 0 0 1 0 10"/><path d="M8 -20 A22 22 0 0 1 8 20"/><path d="M16 -30 A34 34 0 0 1 16 30"/></g></svg><p class="tip" lang="en" id="l-prompt2">Describe your dream school.</p></div>
+              <div class="row-btns"><button class="chunk" id="speak-go" type="button">Je commence</button></div>
+              <p class="note">Parle à voix haute. Rien n'est enregistré.</p>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="4" hidden>
+            <h3 class="l-title">Qu'as-tu réussi&nbsp;?</h3>
+            <div class="crit" role="group" aria-label="Critères">
+              <button class="tile" role="checkbox" aria-checked="false" type="button" data-k="0"><span class="box"><svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span><span class="crit-t"></span></button>
+              <button class="tile" role="checkbox" aria-checked="false" type="button" data-k="1"><span class="box"><svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span><span class="crit-t"></span></button>
+              <button class="tile" role="checkbox" aria-checked="false" type="button" data-k="2"><span class="box"><svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5"/></svg></span><span class="crit-t"></span></button>
+            </div>
+          </section>
+        </div>
+        <div class="l-foot" id="l-foot">
+          <div class="fb" id="fb" hidden><span class="fb__icon"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><span class="fb__t" id="fb-t"></span><br><span class="fb__s" id="fb-s"></span></span></div>
+          <button class="chunk chunk--ghost" id="l-skip" type="button" hidden>Passer</button>
+          <span></span>
+          <button class="chunk chunk--main" id="l-next" type="button" disabled>Continuer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="outil" id="outil" aria-labelledby="outil-h">
+  <div class="wrap grid">
+    <div class="caps">
+      <div class="cap cap--head"><h2 class="cap__name" id="outil-h">Ce que fait l'outil</h2></div>
+      <div class="cap in"><p class="cap__name">Parler à la maison</p><p class="cap__desc">Des tâches orales de 2 à 3 minutes, liées à la séquence. L'élève s'enregistre seul, sans le regard de la classe.</p></div>
+      <div class="cap in"><p class="cap__name">Réviser en spirale</p><p class="cap__desc">Le lexique et les structures du programme de l'année reviennent à intervalles espacés, dix minutes à la fois.</p></div>
+      <div class="cap in"><p class="cap__name">Travailler l'accent</p><p class="cap__desc">Accentuation et intonation, avec des modèles venus de plusieurs pays anglophones, comme le demande le programme.</p></div>
+      <div class="cap in"><p class="cap__name">Voir toute la classe</p><p class="cap__desc">Le niveau de chaque élève par activité langagière, et ceux qui ont besoin d'aide. Sans note.</p></div>
+      <div class="cap in"><p class="cap__name">Tenir en cas d'absence</p><p class="cap__desc">Des séances prêtes, liées à la séquence, que la vie scolaire ou un remplaçant peut lancer.</p></div>
+      <div class="cap in"><p class="cap__name">IA encadrée dès la 4<sup>e</sup></p><p class="cap__desc">Avant la 4<sup>e</sup>, des dialogues écrits par le professeur. Ensuite, un partenaire de conversation, sous supervision.</p></div>
+      <div class="cap in"><p class="cap__name">Pour tous les élèves</p><p class="cap__desc">Hors ligne, sur un téléphone d'entrée de gamme. Réglages DYS, sous-titres, aucune publicité.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="prof" id="prof" aria-labelledby="prof-h">
+  <div class="wrap grid">
+    <div class="prof__intro">
+      <h2 id="prof-h" class="in">Côté professeur</h2>
+      <p class="in d1">Qui a rendu, qui a besoin d'aide, quels critères sont acquis. Le vendredi, le professeur écoute d'abord les élèves signalés, puis prépare le retour en classe.</p>
+    </div>
+    <div class="prof__shot in d1">
+      <div data-ui class="desk" aria-label="Maquette de l'écran professeur">
+        <div class="dk-bar"><span class="dk-dots"><i></i><i></i><i></i></span><span class="dk-url">Speak Lab · 4e B</span></div>
+        <div class="dk-body">
+          <div class="dk-head"><div><p class="dk-k">4e B · Séquence 3 · semaine 2</p><p class="dk-t">Describe your dream school</p></div><div class="dk-stats"><span><b>21</b> / 26 rendus</span><span class="warn"><b>4</b> à écouter en priorité</span></div></div>
+          <table>
+            <thead><tr><th>Élève</th><th>Durée</th><th>Would / there would be</th><th>Trois raisons</th><th>Accent de mot</th><th>Statut</th></tr></thead>
+            <tbody><tr class="is-row"><td>Inès</td><td>1:24</td><td><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i></span></td><td><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i></span></td><td><span class="dots"><i class="on"></i><i class="on"></i><i></i></span></td><td><span class="chip">écouté</span></td></tr>
+<tr class="is-row"><td>Yanis</td><td>0:41</td><td><span class="dots"><i class="on"></i><i></i><i></i></span></td><td><span class="dots"><i class="on"></i><i></i><i></i></span></td><td><span class="dots"><i class="on"></i><i></i><i></i></span></td><td><span class="chip prio">à écouter</span></td></tr>
+<tr class="is-row"><td>Chloé</td><td>1:30</td><td><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i></span></td><td><span class="dots"><i class="on"></i><i class="on"></i><i></i></span></td><td><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i></span></td><td><span class="chip">écouté</span></td></tr>
+<tr class="is-row"><td>Mamadou</td><td>1:12</td><td><span class="dots"><i class="on"></i><i class="on"></i><i></i></span></td><td><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i></span></td><td><span class="dots"><i class="on"></i><i class="on"></i><i></i></span></td><td><span class="chip">écouté</span></td></tr>
+<tr class="is-row"><td>Léa</td><td>—</td><td><span class="dots"><i></i><i></i><i></i></span></td><td><span class="dots"><i></i><i></i><i></i></span></td><td><span class="dots"><i></i><i></i><i></i></span></td><td><span class="chip none">non rendu</span></td></tr>
+<tr class="is-row"><td>Rayan</td><td>0:58</td><td><span class="dots"><i class="on"></i><i></i><i></i></span></td><td><span class="dots"><i class="on"></i><i class="on"></i><i></i></span></td><td><span class="dots"><i class="on"></i><i></i><i></i></span></td><td><span class="chip prio">à écouter</span></td></tr>
+<tr class="is-row"><td>Emma</td><td>1:27</td><td><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i></span></td><td><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i></span></td><td><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i></span></td><td><span class="chip">écouté</span></td></tr>
+<tr class="is-row"><td>Noah</td><td>1:05</td><td><span class="dots"><i class="on"></i><i class="on"></i><i></i></span></td><td><span class="dots"><i class="on"></i><i></i><i></i></span></td><td><span class="dots"><i class="on"></i><i></i><i></i></span></td><td><span class="chip prio">à écouter</span></td></tr></tbody>
+          </table>
+          <p class="dk-foot">18 autres élèves · prénoms fictifs</p>
+        </div>
+      </div>
+      <p class="prof__note">Maquette de l'écran professeur, données d'exemple.</p>
+    </div>
+  </div>
+</section>
+
+<section class="textes" id="textes" aria-labelledby="textes-h">
+  <div class="wrap grid">
+    <p class="textes__sent in" id="textes-h"><span>Construit sur les textes&nbsp;:</span> <a href="https://www.education.gouv.fr/bo/2025/Hebdo22/MENE2504621A">le programme d'anglais de 2025</a>, <a href="https://eduscol.education.gouv.fr/sites/default/files/document/2026livretaccompagnementanglais6e5e4e3e-127310.pdf">le livret d'accompagnement Éduscol</a>, <a href="https://eduscol.education.fr/document/30097/download">les niveaux du CECRL</a>, <a href="https://www.education.gouv.fr/publication-du-cadre-d-usage-de-l-intelligence-artificielle-en-education-462936">le cadre d'usage de l'IA en éducation</a>, <a href="https://www.ac-paris.fr/gar-gestionnaire-d-acces-aux-ressources-numeriques-123857">le GAR</a> et le RGPD.</p>
+    <p class="textes__also in d1">Il complète ce qui existe déjà&nbsp;: <a href="https://www.education.gouv.fr/lancement-de-captain-kelly-l-assistant-vocal-pour-l-anglais-l-ecole-459585">Captain Kelly</a>, l'assistant vocal d'anglais pour le primaire, et <a href="https://edtechactu.com/outils-collaboratifs/mia-seconde-generalisee-a-lensemble-des-eleves-de-seconde/">MIA Seconde</a>, qui couvre le français et les mathématiques en seconde. Au collège et au lycée, l'oral en anglais n'a pas encore son outil.</p>
+  </div>
+</section>
+
+<section class="route" id="route" aria-labelledby="route-h">
+  <div class="wrap">
+    <h2 id="route-h" class="in">Feuille de route</h2>
+    <table class="lineup in d1">
+      <thead class="sr"><tr><th>Étape</th><th>Format</th><th>Pour qui</th><th>Statut</th></tr></thead>
+      <tbody>
+        <tr><th colspan="4" scope="rowgroup">Version 1, sans IA</th></tr>
+        <tr><td class="col-a">Tâches orales enregistrées</td><td class="col-b meta">web, hors ligne</td><td class="col-c meta">6<sup>e</sup> à terminale</td><td class="col-d">prototype</td></tr>
+        <tr><td class="col-a">Révisions espacées</td><td class="col-b meta">10 min par jour</td><td class="col-c meta">6<sup>e</sup> à terminale</td><td class="col-d">prototype</td></tr>
+        <tr><td class="col-a">Vue de classe par activité</td><td class="col-b meta">écran professeur</td><td class="col-c meta">enseignants</td><td class="col-d">prototype</td></tr>
+        <tr><td class="col-a">Séances de continuité</td><td class="col-b meta">séances prêtes</td><td class="col-c meta">vie scolaire</td><td class="col-d">prototype</td></tr>
+      </tbody>
+      <tbody>
+        <tr><th colspan="4" scope="rowgroup">Version 2</th></tr>
+        <tr><td class="col-a">Partenaire de conversation IA</td><td class="col-b meta">supervisé</td><td class="col-c meta">4<sup>e</sup> à terminale</td><td class="col-d">après validation</td></tr>
+        <tr><td class="col-a">Retour sur la prononciation</td><td class="col-b meta">automatique</td><td class="col-c meta">6<sup>e</sup> à terminale</td><td class="col-d">après validation</td></tr>
+      </tbody>
+      <tbody>
+        <tr><th colspan="4" scope="rowgroup">Avant toute classe</th></tr>
+        <tr class="note"><td class="col-a">Accord du chef d'établissement</td><td class="col-b meta">établissement</td><td class="col-c meta">direction</td><td class="col-d">requis</td></tr>
+        <tr class="note"><td class="col-a">Avis du DPO de l'académie</td><td class="col-b meta">RGPD</td><td class="col-c meta">académie</td><td class="col-d">requis</td></tr>
+        <tr class="note"><td class="col-a">Accès par le GAR et l'ENT</td><td class="col-b meta">convention</td><td class="col-c meta">DRANE</td><td class="col-d">à demander</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="about" id="auteur" aria-label="Qui propose Speak Lab">
+  <div class="wrap">
+    <p class="about__text in"><strong>Amine Brahimi.</strong> Je suis <mark class="hl hl--a">formateur d'anglais indépendant</mark> depuis 2024&nbsp;: des adultes et des salariés, en ligne, et la préparation au TOEFL. Avant cela, j'animais des ateliers d'anglais en association à <mark class="hl hl--b">Oujda</mark>. J'ai une licence d'études anglophones, un master en études européennes à <mark class="hl hl--c">Sciences Po et à l'UCLouvain</mark>, puis un master LLCER médias et médiation culturelle à l'<mark class="hl hl--b">Université Clermont Auvergne</mark>, trois diplômes suivis en anglais. Je parle <mark class="hl hl--a">anglais (C2)</mark>, français et arabe. J'ai aussi travaillé dans la communication numérique, notamment chez <mark class="hl hl--c">Just Eat Takeaway.com</mark> à Bruxelles, où l'on construit chaque outil autour de ceux qui l'utilisent. Speak Lab est un concept, pas un produit&nbsp;: je le présente pour montrer comment je pense l'oral en classe. <span class="about__end"><a href="#contact">Parlons-en.</a></span></p>
+  </div>
+</section>
+</main>
+
+<footer class="foot" id="sources">
+  <div class="wrap grid foot__cols">
+    <div class="foot__col">
+      <h2>Speak Lab</h2>
+      <p>Un concept présenté par Amine Brahimi, octobre 2026.</p>
+      <p>Aucun pilote, aucune donnée d'élève&nbsp;: les écrans sont des maquettes.</p>
+    </div>
+    <div class="foot__col foot__col--wide">
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://www.cnesco.fr/wp-content/uploads/2019/04/190410_Dossier_synthese_Langues_.pdf">CNESCO, conférence de consensus Langues vivantes, 2019</a></li>
+        <li><a href="https://www.education.gouv.fr/depp/anglais-en-fin-d-ecole-et-de-college-une-hausse-du-niveau-des-eleves-en-comprehension-de-l-oral-en-452550">DEPP, Cedre 2022, anglais</a></li>
+        <li><a href="https://www.education.gouv.fr/sites/default/files/document/depp-ni-2026-38pdf-519892.pdf">DEPP, note d'information 2026-38</a></li>
+        <li><a href="https://www.banquedesterritoires.fr/au-college-le-temps-denseignement-perdu-est-source-diniquite-notamment-territoriale">Cour des comptes, temps d'enseignement perdu, 2025</a></li>
+        <li><a href="https://www.education.gouv.fr/bo/2025/Hebdo22/MENE2504621A">BO n°&nbsp;22 du 29 mai 2025, programmes de langues</a></li>
+        <li><a href="https://eduscol.education.gouv.fr/sites/default/files/document/2026livretaccompagnementanglais6e5e4e3e-127310.pdf">Éduscol, livret d'accompagnement anglais, 2026</a></li>
+        <li><a href="https://www.education.gouv.fr/publication-du-cadre-d-usage-de-l-intelligence-artificielle-en-education-462936">Cadre d'usage de l'IA en éducation, 2025</a></li>
+        <li><a href="https://www.ac-paris.fr/gar-gestionnaire-d-acces-aux-ressources-numeriques-123857">Académie de Paris, le GAR</a></li>
+      </ul>
+    </div>
+    <div class="foot__col">
+      <h2>Sommaire</h2>
+      <ul>
+        <li><a href="#constat">Le constat</a></li>
+        <li><a href="#calcul">Le calcul</a></li>
+        <li><a href="#semaine">Une semaine type</a></li>
+        <li><a href="#essayer">Essayer une tâche</a></li>
+        <li><a href="#outil">L'outil</a></li>
+        <li><a href="#route">Feuille de route</a></li>
+      </ul>
+    </div>
+    <div class="foot__col foot__col--contact" id="contact">
+      <h2>Contact</h2>
+      <span class="email" id="email">amiinebrahiimii@gmail.com</span>
+      <button class="copy" id="copy" type="button">Copier l'adresse</button>
+      <a href="https://aminebrr.github.io/Portfolio/">Portfolio</a>
+    </div>
+  </div>
+  <div></div>
+  <div class="wrap">
+    <span class="foot__mark" id="mark" aria-hidden="true">Speak Lab</span>
+    <p class="foot__legal">Concept indépendant, sans lien avec le ministère de l'Éducation nationale. Chiffres issus des sources publiques citées.</p>
+  </div>
+</footer>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* menu on phones */
+  var mb = $('menu-btn'), nav = $('nav');
+  mb.addEventListener('click', function () {
+    var open = nav.classList.toggle('is-open');
+    mb.setAttribute('aria-expanded', open ? 'true' : 'false');
+    mb.textContent = open ? 'Fermer' : 'Menu';
+  });
+  nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') { nav.classList.remove('is-open'); mb.setAttribute('aria-expanded', 'false'); mb.textContent = 'Menu'; } });
+
+  /* the calculation */
+  var WEEKS = 36, LESSON = 55, TASK = 3;
+  var fr = function (n, d) { return n.toLocaleString('fr-FR', { maximumFractionDigits: d || 0 }); };
+  function calc() {
+    var e = +$('c-eleves').value, h = +$('c-heures').value, p = +$('c-part').value, t = +$('c-taches').value;
+    $('o-eleves').textContent = e;
+    $('o-heures').textContent = fr(h, 1);
+    $('o-part').textContent = p + ' %';
+    $('o-taches').textContent = t;
+    var perLesson = LESSON * (p / 100) / e;
+    var classe = Math.round(perLesson * h * WEEKS);
+    var avec = classe + t * TASK * WEEKS;
+    $('f-classe').textContent = fr(classe);
+    $('f-avec').textContent = fr(avec);
+    window.__speak = { pupils: e, classe: classe, added: avec - classe };
+    if (window.SpeakRoom) window.SpeakRoom.set(window.__speak);
+    $('f-cours').textContent = fr(perLesson, 1);
+    $('f-taches').textContent = t;
+  }
+  ['c-eleves', 'c-heures', 'c-part', 'c-taches'].forEach(function (id) { $(id).addEventListener('input', calc); });
+  calc();
+
+  /* the texts: one name lit at a time */
+  var names = document.querySelectorAll('.textes__sent a'), lit = 0;
+  if (names.length) {
+    names[0].classList.add('is-lit');
+    setInterval(function () {
+      names[lit].classList.remove('is-lit');
+      lit = (lit + 1) % names.length;
+      names[lit].classList.add('is-lit');
+    }, 2000);
+  }
+
+  /* the pupil screen: waveform and a demo recording */
+  var cv = $('wave'), ctx = cv && cv.getContext ? cv.getContext('2d') : null;
+  var rec = $('ph-rec'), clock = $('ph-clock'), recording = false, t0 = 0, phase = 0;
+  var bars = 44, seed = [];
+  for (var i = 0; i < bars; i++) seed.push(0.25 + 0.75 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.43)));
+  function draw(now) {
+    if (!ctx) return;
+    var w = cv.width, hgt = cv.height, bw = w / bars;
+    ctx.clearRect(0, 0, w, hgt);
+    for (var i = 0; i < bars; i++) {
+      var live = recording ? (0.35 + 0.65 * Math.abs(Math.sin(now / 260 + i * 0.9) * Math.sin(now / 410 + i * 0.37))) : seed[i];
+      var a = recording ? live : seed[i] * (0.55 + 0.45 * Math.abs(Math.sin(now / 900 + i * 0.25)));
+      if (reduce) a = seed[i];
+      var bh = Math.max(6, a * (hgt - 8));
+      var played = recording ? i < ((now - t0) / 1000 / 90) * bars : false;
+      ctx.fillStyle = recording ? (played ? '#ff4a1f' : '#eff0f1') : '#55585e';
+      ctx.fillRect(i * bw + bw * 0.22, (hgt - bh) / 2, bw * 0.56, bh);
+    }
+    if (recording) {
+      var s = Math.min(90, Math.floor((now - t0) / 1000));
+      clock.textContent = '00:' + String(s).padStart(2, '0').replace(/^(\d)$/, '0$1');
+      if (s >= 60) clock.textContent = '01:' + String(s - 60).padStart(2, '0');
+      if (s >= 90) stop();
+    }
+    if (!reduce || recording) requestAnimationFrame(draw);
+  }
+  function stop() { recording = false; rec.setAttribute('aria-pressed', 'false'); rec.setAttribute('aria-label', "Démarrer l'enregistrement de démonstration"); }
+  rec.addEventListener('click', function () {
+    if (recording) { stop(); return; }
+    recording = true; t0 = performance.now(); clock.textContent = '00:00';
+    rec.setAttribute('aria-pressed', 'true'); rec.setAttribute('aria-label', "Arrêter l'enregistrement de démonstration");
+    if (reduce) requestAnimationFrame(draw);
+  });
+  requestAnimationFrame(draw);
+
+
+  /* the lesson: five short screens, one task per level */
+  var TASKS = {
+    '6e': { next: '4e', speak: 45, prompt: 'Present your favourite room.',
+      how: "Présente la pièce de la maison que tu préfères : ce qu'il y a dedans et pourquoi tu l'aimes.",
+      words: ['There is…', 'There are…', 'my favourite…', 'because', 'on the wall'],
+      text: "This is my bedroom. It's my favourite room because it's quiet. There is a big bed, a desk and a window. There are posters on the wall: I love football and music. I do my homework at my desk and I play video games on Saturday. My bedroom is blue and white. I like it because it's my place!",
+      checks: ["J'ai dit quelle pièce je préfère et pourquoi.", "J'ai utilisé <i lang=\"en\">there is</i> ou <i lang=\"en\">there are</i>.", "J'ai parlé 45 secondes sans m'arrêter."] },
+    '4e': { next: '2de', speak: 90, prompt: 'Describe your dream school.',
+      how: "Imagine l'école idéale et dis ce qu'elle aurait de différent. Donne au moins trois raisons.",
+      words: ['there would be', 'I would like…', 'because', 'so'],
+      text: "My dream school would be near the beach. There would be no lessons before nine o'clock, because students need to sleep. There would be a big garden where we could eat lunch outside. I would like a music studio too, because I love singing. Teachers would use more videos and games, so lessons would be more fun. And there would be no homework on Fridays!",
+      checks: ["J'ai utilisé <i lang=\"en\">would</i> ou <i lang=\"en\">there would be</i>.", "J'ai donné trois raisons avec <i lang=\"en\">because</i>.", "J'ai accentué <b lang=\"en\">DREAM</b> et <b lang=\"en\">SCHOOL</b>."] },
+    '2de': { next: null, speak: 120, prompt: 'Phones at school: yes or no?',
+      how: "Donne ton avis sur les téléphones à l'école, avec un argument pour, un argument contre et une conclusion.",
+      words: ['In my opinion', 'On the one hand', 'On the other hand', 'However', 'To sum up'],
+      text: "In my opinion, phones should not be banned completely. On the one hand, they can distract students, and some people use them to bully others. On the other hand, phones are useful: we can look up a word, check our timetable or call our parents. I believe the best solution is a clear rule: phones stay in the bag during lessons, but teachers can allow them for a specific activity. To sum up, we should learn to use phones, not just hide them.",
+      checks: ["J'ai donné mon avis clairement dès le début.", "J'ai présenté un pour et un contre avec des connecteurs.", "J'ai conclu avec <i lang=\"en\">To sum up</i> ou <i lang=\"en\">In conclusion</i>."] }
+  };
+  var STEPS = ['Niveau', 'Écoute', 'Préparation', 'Parole', 'Bilan'];
+  var screens = Array.prototype.slice.call(document.querySelectorAll('#lesson .screen'));
+  var next = $('l-next'), skip = $('l-skip'), foot = $('l-foot'), fb = $('fb');
+  var lv = null, step = 0, checked = [false, false, false], judged = false, xp = 0, timer = null;
+  try { xp = parseInt(localStorage.getItem('speaklab-xp') || '0', 10) || 0; } catch (e) {}
+  $('l-xp').textContent = xp;
+  var C = 2 * Math.PI * 84;
+  ['prep-ring', 'speak-ring'].forEach(function (id) { $(id).style.strokeDasharray = C; $(id).style.strokeDashoffset = 0; });
+  var mmss = function (n) { return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0'); };
+  var clock = function (n) { return mmss(n).replace(':', '<span class="colon">:</span>'); };
+  function stopTimer() { if (timer) { clearInterval(timer); timer = null; } setTalking(false); }
+  function setTalking(on) { document.querySelectorAll('#lesson .talk:not(.talk--hello), #speak-ring-box').forEach(function (el) { el.classList.toggle('is-talking', on); }); }
+  function ring(id, left, total) { $(id).style.strokeDashoffset = C * (1 - left / total); }
+
+  function go(n) {
+    stopTimer(); stopSpeech();
+    step = n;
+    screens.forEach(function (sc, i) { sc.hidden = i !== n; });
+    $('l-step').textContent = 'Étape ' + (n + 1) + ' sur 5 · ' + STEPS[n];
+    $('l-fill').style.width = (n / 5 * 100) + '%';
+    $('l-bar').setAttribute('aria-valuenow', n);
+    fb.hidden = true; foot.classList.remove('is-good', 'is-meh'); judged = false;
+    skip.hidden = !(n === 2 || n === 3);
+    skip.textContent = n === 2 ? 'Je suis prêt' : "J'ai fini";
+    next.textContent = n === 4 ? 'Vérifier' : 'Continuer';
+    next.disabled = (n === 0 && !lv) || n === 2 || n === 3;
+    if (n === 2) prep();
+    if (n === 3) { var t = TASKS[lv]; $('speak-num').innerHTML = clock(t.speak); ring('speak-ring', t.speak, t.speak); $('speak-go').hidden = false; }
+    if (n === 4) { checked = [false, false, false]; paintChecks(); next.disabled = false; }
+  }
+  function load() {
+    var t = TASKS[lv];
+    $('l-prompt').textContent = t.prompt; $('l-prompt2').textContent = t.prompt;
+    $('l-how').textContent = t.how;
+    $('l-model').textContent = t.text;
+    $('l-words').innerHTML = t.words.map(function (w) { return '<li><button class="tile chip-w" type="button" data-say="' + w.replace(/"/g, '') + '">' + w + '</button></li>'; }).join('');
+    document.querySelectorAll('#lesson .crit-t').forEach(function (el, i) { el.innerHTML = t.checks[i]; });
+  }
+  function prep() {
+    var left = 30; $('prep-num').textContent = left; ring('prep-ring', left, 30);
+    timer = setInterval(function () { left -= 1; $('prep-num').textContent = left; ring('prep-ring', left, 30); if (left <= 0) { stopTimer(); go(3); } }, 1000);
+  }
+  $('speak-go').addEventListener('click', function () {
+    var total = TASKS[lv].speak, left = total; this.hidden = true; setTalking(true);
+    $('speak-num').innerHTML = clock(left);
+    timer = setInterval(function () {
+      left -= 1; $('speak-num').innerHTML = clock(left); ring('speak-ring', left, total);
+      if (left <= 0) { stopTimer(); go(4); }
+    }, 1000);
+  });
+  document.querySelectorAll('#lesson .lvl').forEach(function (b) {
+    b.addEventListener('click', function () {
+      lv = b.dataset.level;
+      document.querySelectorAll('#lesson .lvl').forEach(function (o) { o.setAttribute('aria-checked', o === b ? 'true' : 'false'); });
+      load(); next.disabled = false;
+    });
+  });
+  function paintChecks() { document.querySelectorAll('#lesson .crit .tile').forEach(function (tl, i) { tl.setAttribute('aria-checked', checked[i] ? 'true' : 'false'); }); }
+  document.querySelectorAll('#lesson .crit .tile').forEach(function (tl, i) {
+    tl.addEventListener('click', function () { if (judged) return; checked[i] = !checked[i]; paintChecks(); });
+  });
+  skip.addEventListener('click', function () { go(step + 1); });
+  $('l-restart').addEventListener('click', function () { lv = null; document.querySelectorAll('#lesson .lvl').forEach(function (o) { o.setAttribute('aria-checked', 'false'); }); go(0); });
+  next.addEventListener('click', function () {
+    if (step < 4) { go(step + 1); return; }
+    if (!judged) {
+      var n = checked.filter(Boolean).length, gain = 5 + n * 5;
+      judged = true; xp += gain; $('l-xp').textContent = xp;
+      try { localStorage.setItem('speaklab-xp', String(xp)); } catch (e) {}
+      $('l-fill').style.width = '100%'; $('l-bar').setAttribute('aria-valuenow', 5);
+      var good = n >= 2;
+      foot.classList.add(good ? 'is-good' : 'is-meh');
+      $('fb-t').textContent = ['On réessaie ?', 'Continue comme ça !', 'Presque parfait !', 'Excellent !'][n];
+      $('fb-s').textContent = '+' + gain + ' XP · ' + ['Relis l’exemple et vise un critère.', 'Vise le critère suivant la prochaine fois.', 'Il te manque un critère.', 'Les trois critères sont réussis.'][n];
+      fb.hidden = false;
+      var fly = document.createElement('span'); fly.className = 'xp-fly'; fly.textContent = '+' + gain + ' XP';
+      var top = $('l-xp').getBoundingClientRect(), box = $('lesson').getBoundingClientRect();
+      fly.style.left = (top.left - box.left) + 'px'; fly.style.top = (top.top - box.top + 18) + 'px';
+      $('lesson').style.position = 'relative'; $('lesson').appendChild(fly); setTimeout(function () { fly.remove(); }, 1200);
+      var nx = TASKS[lv].next;
+      next.textContent = n === 3 && nx ? 'Niveau suivant' : 'Recommencer';
+      return;
+    }
+    var nx2 = TASKS[lv].next, all = checked.every(Boolean);
+    if (all && nx2) { lv = nx2; document.querySelectorAll('#lesson .lvl').forEach(function (o) { o.setAttribute('aria-checked', o.dataset.level === lv ? 'true' : 'false'); }); load(); go(1); }
+    else go(1);
+  });
+
+  /* the device's own English voice, when there is one */
+  var synth = window.speechSynthesis, canSpeak = !!(synth && window.SpeechSynthesisUtterance);
+  function stopSpeech() { try { if (synth) synth.cancel(); } catch (e) {} if (step !== 3) setTalking(false); }
+  function speak(text, rate) {
+    if (!canSpeak) return;
+    try {
+      synth.cancel();
+      var u = new SpeechSynthesisUtterance(text); u.lang = 'en-GB'; u.rate = rate || 0.95;
+      var vs = synth.getVoices() || [];
+      var v = vs.filter(function (x) { return /^en(-|_)GB/i.test(x.lang); })[0] || vs.filter(function (x) { return /^en/i.test(x.lang); })[0];
+      if (v) u.voice = v;
+      u.onstart = function () { setTalking(true); };
+      u.onend = u.onerror = function () { setTalking(false); };
+      synth.speak(u);
+    } catch (e) {}
+  }
+  if (canSpeak) { $('spk-prompt').hidden = false; $('spk-model').hidden = false; }
+  $('spk-prompt').addEventListener('click', function () { speak(TASKS[lv].prompt, lv === '6e' ? 0.85 : 0.95); });
+  $('spk-model').addEventListener('click', function () { speak(TASKS[lv].text, lv === '6e' ? 0.85 : 0.95); });
+  $('l-words').addEventListener('click', function (e) { var b = e.target.closest('[data-say]'); if (b) { b.setAttribute('aria-pressed', 'true'); setTimeout(function () { b.removeAttribute('aria-pressed'); }, 600); speak(b.dataset.say.replace('…', ''), 0.85); } });
+
+  go(0);
+
+  /* copy the address */
+  $('copy').addEventListener('click', function () {
+    var btn = this, addr = $('email').textContent;
+    function done(msg) { btn.textContent = msg; setTimeout(function () { btn.textContent = "Copier l'adresse"; }, 2200); }
+    function fallback() { var r = document.createRange(); r.selectNodeContents($('email')); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); done('Adresse sélectionnée'); }
+    try { navigator.clipboard.writeText(addr).then(function () { done('Adresse copiée'); }, fallback); } catch (e) { fallback(); }
+  });
+
+  /* fit the closing wordmark to the width */
+  var mark = $('mark');
+  function fit() {
+    if (!mark) return;
+    mark.style.fontSize = '';
+    var box = mark.parentElement.clientWidth - parseFloat(getComputedStyle(mark.parentElement).paddingLeft) - parseFloat(getComputedStyle(mark.parentElement).paddingRight);
+    var size = parseFloat(getComputedStyle(mark).fontSize);
+    var w = mark.scrollWidth;
+    if (w > 0) mark.style.fontSize = (size * box / w * 0.995) + 'px';
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit); else fit();
+  window.addEventListener('resize', fit);
+})();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  var fig = document.getElementById('room'), stage = document.getElementById('room-stage');
+  if (!fig || typeof THREE === 'undefined') return;
+  var renderer;
+  try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); } catch (e) { return; }
+  if (!renderer || !renderer.getContext()) return;
+  fig.hidden = false;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.setClearColor(0x000000, 0);
+  stage.appendChild(renderer.domElement);
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(30, 1, 0.1, 200);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xb8babf, 0.9));
+  var sun = new THREE.DirectionalLight(0xffffff, 1.1);
+  sun.position.set(-7, 14, 9); sun.castShadow = true;
+  sun.shadow.mapSize.set(1024, 1024);
+  var sc = sun.shadow.camera; sc.left = -10; sc.right = 10; sc.top = 10; sc.bottom = -10; sc.near = 1; sc.far = 40;
+  sun.shadow.radius = 4;
+  scene.add(sun);
+
+  var mat = function (c, r) { var m = new THREE.MeshStandardMaterial({ color: c, roughness: r == null ? 0.85 : r, metalness: 0 }); m.color.convertSRGBToLinear(); return m; };
+  var M = { floor: mat(0xc9cace, 1), desk: mat(0xc6c8cd), leg: mat(0x9a9ca2), ink: mat(0x18191b, 0.6), acc: mat(0xff4a1f, 0.55), board: mat(0x2b2d31, 0.7), tdesk: mat(0xb3b5ba) };
+  var box = function (w, h, d, m) { var o = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); o.castShadow = true; o.receiveShadow = true; return o; };
+
+  var MAXS = 36, PER_ROW = 6, PAIR_GAP = 2.3, SEAT = 0.62, ROW_GAP = 1.55, TOP = 0.56, K = 0.0062;
+  var room = new THREE.Group(); scene.add(room);
+  var shadowFloor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.08 }));
+  shadowFloor.rotation.x = -Math.PI / 2; shadowFloor.position.y = -0.001; shadowFloor.receiveShadow = true; scene.add(shadowFloor);
+  var floor = box(1, 0.06, 1, M.floor); floor.castShadow = false; floor.position.y = -0.03; room.add(floor);
+  var board = box(4.6, 1.5, 0.08, M.board); room.add(board);
+  var tdesk = box(1.8, 0.62, 0.8, M.tdesk); room.add(tdesk);
+
+  var desks = [], seats = [];
+  for (var r = 0; r < MAXS / PER_ROW; r++) {
+    for (var pIdx = 0; pIdx < 3; pIdx++) {
+      var g = new THREE.Group();
+      var top = box(1.38, 0.06, 0.62, M.desk); top.position.y = TOP - 0.03; g.add(top);
+      var l1 = box(0.06, TOP - 0.06, 0.5, M.leg); l1.position.set(-0.62, (TOP - 0.06) / 2, 0); g.add(l1);
+      var l2 = l1.clone(); l2.position.x = 0.62; g.add(l2);
+      g.position.set((pIdx - 1) * PAIR_GAP, 0, 0);
+      g.userData.row = r; room.add(g); desks.push(g);
+      for (var sI = 0; sI < 2; sI++) {
+        var a = box(0.34, 1, 0.34, M.ink), b = box(0.34, 1, 0.34, M.acc);
+        var x = (pIdx - 1) * PAIR_GAP + (sI - 0.5) * SEAT;
+        a.position.x = b.position.x = x;
+        a.scale.y = b.scale.y = 0.0001;
+        room.add(a); room.add(b);
+        seats.push({ a: a, b: b, row: r, ha: 0, hb: 0, ta: 0, tb: 0, at: 0 });
+      }
+    }
+  }
+
+  var state = { pupils: 26, classe: 0, added: 0 }, shown = false, az = -0.55, azT = -0.55, polar = 1.02, radius = 20, radiusT = 20, centerY = 0.6, centerYT = 0.6;
+  function layout() {
+    var n = state.pupils, rows = Math.ceil(n / PER_ROW), depth = (rows - 1) * ROW_GAP;
+    var z0 = -depth / 2 + 0.6;
+    desks.forEach(function (d, i) { d.visible = i * 2 < n; d.position.z = z0 + d.userData.row * ROW_GAP; });
+    seats.forEach(function (s, i) { var z = z0 + s.row * ROW_GAP; s.a.position.z = s.b.position.z = z; s.on = i < n; });
+    var front = z0 - 2.1;
+    tdesk.position.set(-1.6, 0.31, front);
+    board.position.set(0.3, 1.25, front - 0.9);
+    var w = 3 * PAIR_GAP + 1.6, d = depth + 5;
+    floor.scale.set(w, 1, d); floor.position.z = z0 + depth / 2 - 1.6;
+    var hMax = TOP + (state.classe + state.added) * K;
+    centerYT = Math.min(hMax, 3) * 0.42;
+    var R = Math.sqrt(w * w / 4 + d * d / 4 + hMax * hMax / 3);
+    var aspect = camera.aspect || 1.6, vf = camera.fov * Math.PI / 180, hf = 2 * Math.atan(Math.tan(vf / 2) * aspect);
+    radiusT = R / Math.sin(Math.min(vf, hf) / 2) * (aspect < 1 ? 0.78 : 0.66);
+  }
+  function targets(stagger) {
+    var now = performance.now();
+    seats.forEach(function (s, i) {
+      s.ta = shown && s.on ? state.classe * K : 0;
+      s.tb = shown && s.on ? state.added * K : 0;
+      s.at = now + (stagger && !reduce ? (s.row * 90 + (i % PER_ROW) * 25) : 0);
+    });
+  }
+  var raf = null, dragging = false;
+  function kick() { if (!raf) raf = requestAnimationFrame(loop); }
+  function step(cur, tgt) { var d = tgt - cur; return Math.abs(d) < 0.0005 ? tgt : cur + d * (reduce ? 1 : 0.12); }
+  function loop(now) {
+    raf = null;
+    var moving = false;
+    seats.forEach(function (s) {
+      if (now < s.at) { moving = true; return; }
+      var na = step(s.ha, s.ta), nb = step(s.hb, s.tb);
+      if (na !== s.ha || nb !== s.hb) moving = true;
+      s.ha = na; s.hb = nb;
+      s.a.scale.y = Math.max(na, 0.0001); s.a.position.y = TOP + na / 2; s.a.visible = na > 0.001;
+      s.b.scale.y = Math.max(nb, 0.0001); s.b.position.y = TOP + na + nb / 2; s.b.visible = nb > 0.001;
+    });
+    var nr = step(radius, radiusT), naz = step(az, azT), ncy = step(centerY, centerYT);
+    if (nr !== radius || naz !== az || ncy !== centerY) moving = true;
+    radius = nr; az = naz; centerY = ncy;
+    camera.position.set(Math.sin(az) * Math.sin(polar) * radius, Math.cos(polar) * radius + centerY, Math.cos(az) * Math.sin(polar) * radius);
+    camera.lookAt(0, centerY, 0);
+    renderer.render(scene, camera);
+    if (moving || dragging) kick();
+  }
+  function resize() {
+    var w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    layout(); radius = radiusT; kick();
+  }
+
+  var lastX = 0;
+  stage.addEventListener('pointerdown', function (e) { dragging = true; lastX = e.clientX; try { stage.setPointerCapture(e.pointerId); } catch (_) {} kick(); });
+  stage.addEventListener('pointermove', function (e) { if (!dragging) return; azT = Math.max(-1.35, Math.min(1.35, azT + (e.clientX - lastX) * 0.007)); lastX = e.clientX; kick(); });
+  var end = function () { dragging = false; kick(); };
+  stage.addEventListener('pointerup', end); stage.addEventListener('pointercancel', end);
+
+  window.SpeakRoom = { set: function (v) { var nChanged = v.pupils !== state.pupils; state = { pupils: v.pupils, classe: v.classe, added: v.added }; layout(); targets(nChanged); kick(); } };
+  if (window.__speak) state = window.__speak;
+  if ('ResizeObserver' in window) new ResizeObserver(resize).observe(stage); else window.addEventListener('resize', resize);
+  resize();
+  function reveal() { if (shown) return; shown = true; targets(true); kick(); }
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { reveal(); io.disconnect(); } }, { threshold: 0.3 });
+    io.observe(stage);
+  } else reveal();
+})();
+</script>
+
+<script>
+(function () {
+  var hero = document.getElementById('haut'), canvas = document.getElementById('hero-gl'), h1 = hero && hero.querySelector('.hero__word');
+  if (!hero || !canvas || typeof THREE === 'undefined' || !THREE.Font || !THREE.TextGeometry) return;
+  var renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); } catch (e) { return; }
+  if (!renderer.getContext()) return;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.setClearColor(0x000000, 0);
+  hero.classList.add('hero--3d');
+
+  var font = new THREE.Font({"glyphs":{"s":{"ha":557,"x_min":24,"x_max":527,"o":"m 282 -13 l 282 -13 q 166 3 221 -13 q 72 56 110 20 q 24 151 34 92 l 24 151 l 176 181 q 204 124 180 144 q 274 104 227 104 l 274 104 q 340 120 320 104 q 360 156 360 136 l 360 156 q 343 190 360 174 q 282 211 327 205 l 282 211 l 240 217 q 178 229 211 221 q 114 251 144 236 q 64 294 83 267 q 45 367 45 322 l 45 367 q 74 459 45 420 q 154 519 102 498 q 275 541 206 541 l 275 541 q 386 523 335 541 q 473 472 438 506 q 519 388 509 438 l 519 388 l 369 357 q 357 389 366 373 q 331 415 349 405 q 282 426 313 426 l 282 426 q 229 413 248 426 q 211 380 211 400 l 211 380 q 225 352 211 363 q 259 336 238 342 q 306 326 281 330 l 306 326 l 356 318 q 438 295 398 313 q 502 246 477 278 q 527 162 527 214 l 527 162 q 495 65 527 104 q 407 6 462 26 q 282 -13 351 -13"},"p":{"ha":644,"x_min":64,"x_max":616,"o":"m 235 -190 l 64 -190 l 64 527 l 227 527 l 227 434 q 299 515 256 489 l 299 515 q 400 541 343 541 l 400 541 q 516 508 467 541 q 590 413 564 475 q 616 262 616 351 l 616 262 q 590 113 616 175 q 515 19 564 51 q 396 -13 465 -13 l 396 -13 q 292 15 335 -13 l 292 15 q 235 73 260 35 l 235 73 l 235 -190 m 333 114 l 333 114 q 408 155 381 114 q 436 266 436 195 l 436 266 q 409 375 436 336 q 334 414 382 414 l 334 414 q 279 397 303 414 q 241 347 255 380 q 227 264 227 314 l 227 264 q 257 152 227 190 q 333 114 288 114"},"e":{"ha":606,"x_min":31,"x_max":575,"o":"m 315 -13 l 315 -13 q 173 21 237 -13 q 69 117 108 55 q 31 265 31 179 l 31 265 q 68 411 31 349 q 170 507 106 473 q 315 541 235 541 l 315 541 q 406 527 360 541 q 490 480 451 514 q 552 386 528 447 q 575 230 575 325 l 575 230 l 209 230 q 233 152 214 183 l 233 152 q 314 110 258 110 l 314 110 q 374 128 348 110 q 414 184 399 146 l 414 184 l 566 148 q 508 55 547 90 q 417 3 468 19 q 315 -13 366 -13 m 212 320 l 212 320 l 407 320 q 392 371 402 350 l 392 371 q 357 412 378 399 q 311 425 336 425 l 311 425 q 252 404 275 425 q 219 347 229 383 l 219 347 q 212 320 215 334"},"a":{"ha":614,"x_min":27,"x_max":587,"o":"m 220 -13 l 220 -13 q 126 4 170 -13 q 55 56 82 21 q 27 147 27 91 l 27 147 q 62 247 27 208 q 161 306 97 286 q 313 325 225 325 l 313 325 l 372 325 l 372 341 q 356 411 372 389 q 302 433 339 433 l 302 433 q 246 413 265 433 q 221 356 227 394 l 221 356 l 50 384 q 90 464 60 428 q 175 521 120 500 q 311 542 229 542 l 311 542 q 435 520 383 542 q 514 447 486 499 q 542 304 542 395 l 542 304 l 542 149 q 546 127 542 133 q 566 122 551 122 l 566 122 l 587 122 l 587 0 l 511 0 q 412 32 445 0 l 412 32 q 387 74 395 49 l 387 74 q 361 39 376 55 l 361 39 q 305 2 340 16 q 220 -13 271 -13 m 271 99 l 271 99 q 326 113 303 99 q 361 154 349 127 q 374 219 374 181 l 374 219 l 374 233 l 321 233 q 248 221 274 233 q 212 191 222 208 q 202 157 202 173 l 202 157 q 208 133 202 146 q 228 109 213 119 q 271 99 242 99"},"k":{"ha":630,"x_min":65,"x_max":619,"o":"m 236 0 l 65 0 l 65 732 l 236 732 l 236 337 l 422 527 l 610 527 l 419 331 l 619 0 l 430 0 l 306 212 l 236 140 l 236 0"}},"familyName":"Schibsted Grotesk","ascender":977,"descender":-258,"underlinePosition":-100,"underlineThickness":50,"boundingBox":{"yMin":-266,"xMin":-222,"yMax":1204,"xMax":3145},"resolution":1000,"original_font_information":{"format":0,"fontFamily":"Schibsted Grotesk","fontSubfamily":"ExtraBold"},"cssFontWeight":"bold","cssFontStyle":"normal"});
+  var scene = new THREE.Scene();
+  var D = 100, FOV = 18;
+  var camera = new THREE.PerspectiveCamera(FOV, 1, 1, 400);
+  camera.position.set(0, 0, D);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x2a2b2f, 0.55));
+  var key = new THREE.DirectionalLight(0xffffff, 1.15); key.position.set(-30, 45, 60); scene.add(key);
+  var rim = new THREE.DirectionalLight(0xffd2c2, 0.45); rim.position.set(50, -10, -30); scene.add(rim);
+  var lin = function (hex, r, m) { var mt = new THREE.MeshStandardMaterial({ color: hex, roughness: r, metalness: m || 0 }); mt.color.convertSRGBToLinear(); return mt; };
+  var orange = lin(0xff4a1f, 0.42, 0.05), paper = lin(0xeff0f1, 0.55);
+
+  /* the word, one mesh per letter, set in Schibsted Grotesk ExtraBold */
+  var word = new THREE.Group(); scene.add(word);
+  var letters = [], TRACK = -60, adv = 0;
+  'speak'.split('').forEach(function (ch) {
+    var g = new THREE.TextGeometry(ch, { font: font, size: 1, height: 0.2, curveSegments: 10, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.012, bevelSegments: 3 });
+    g.translate(0, 0, -0.1);
+    var m = new THREE.Mesh(g, orange);
+    m.position.x = adv;
+    adv += (font.data.glyphs[ch].ha + TRACK) / 1000;
+    word.add(m); letters.push(m);
+  });
+  var kLetter = letters[4];
+
+  /* the speaking head, standing on the stem of the k: profile facing right, origin at the base of the neck */
+  var mount = new THREE.Group(); mount.position.set(0.150, 0.744, 0); kLetter.add(mount);
+  var head = new THREE.Group(); mount.add(head);
+  var sh = new THREE.Shape();
+  sh.moveTo(0.30, 0.00);
+  sh.bezierCurveTo(0.31, 0.12, 0.28, 0.24, 0.26, 0.32);
+  sh.bezierCurveTo(0.14, 0.40, 0.05, 0.56, 0.06, 0.74);
+  sh.bezierCurveTo(0.07, 1.02, 0.26, 1.20, 0.48, 1.20);
+  sh.bezierCurveTo(0.72, 1.20, 0.85, 1.08, 0.86, 0.94);
+  sh.bezierCurveTo(0.87, 0.88, 0.87, 0.83, 0.88, 0.80);
+  sh.bezierCurveTo(0.91, 0.74, 1.00, 0.67, 1.00, 0.62);
+  sh.bezierCurveTo(1.00, 0.58, 0.95, 0.57, 0.92, 0.57);
+  sh.bezierCurveTo(0.94, 0.555, 0.95, 0.53, 0.95, 0.51);
+  sh.lineTo(0.905, 0.495);
+  sh.lineTo(0.94, 0.47);
+  sh.bezierCurveTo(0.95, 0.44, 0.93, 0.41, 0.90, 0.40);
+  sh.bezierCurveTo(0.92, 0.37, 0.90, 0.33, 0.86, 0.32);
+  sh.bezierCurveTo(0.80, 0.30, 0.70, 0.30, 0.66, 0.27);
+  sh.bezierCurveTo(0.64, 0.18, 0.66, 0.06, 0.70, 0.00);
+  sh.lineTo(0.30, 0.00);
+  var hg = new THREE.ExtrudeGeometry(sh, { depth: 0.34, curveSegments: 24, bevelEnabled: true, bevelThickness: 0.035, bevelSize: 0.025, bevelSegments: 4 });
+  hg.translate(-0.50, 0.02, -0.17);
+  head.add(new THREE.Mesh(hg, paper));
+  var waves = [];
+  [0.15, 0.29, 0.43].forEach(function (r) {
+    var mt = lin(0xff4a1f, 0.4); mt.transparent = true;
+    var t = new THREE.Mesh(new THREE.TorusGeometry(r, 0.038, 14, 48, 1.5), mt);
+    t.rotation.z = -0.75;
+    t.position.set(0.52, 0.51, 0);
+    head.add(t); waves.push(t);
+  });
+
+  /* fit the word to the h1 box the page lays out */
+  var W = 1, H = 1, upp = 1, fs = 100, base = { x: 0, y: 0 }, headEm = 0.5;
+  function toWorld(px, py) { return { x: (px - W / 2) * upp, y: (H / 2 - py) * upp }; }
+  function layout() {
+    var hr = hero.getBoundingClientRect(); W = hr.width; H = hr.height; if (!W || !H) return;
+    renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix();
+    upp = 2 * D * Math.tan(FOV * Math.PI / 360) / H;
+    fs = parseFloat(getComputedStyle(h1).fontSize);
+    var r = h1.getBoundingClientRect();
+    base = toWorld(r.left - hr.left, H + fs * 0.04);
+    headEm = Math.max(0.5, 120 / fs) / 1.2;
+  }
+
+  /* pointer: the head turns to look at it, the word tilts, a click makes it speak */
+  var ptr = { x: 0, y: 0, px: -1, py: -1, active: false }, tilt = { x: 0, y: 0 };
+  var face = Math.PI, faceT = Math.PI, nod = 0, burst = 0, burstAt = -10, near = 0;
+  var v3 = new THREE.Vector3();
+  function headScreen() {
+    mount.getWorldPosition(v3); v3.y += headEm * fs * upp * 0.55; v3.project(camera);
+    return { x: (v3.x + 1) / 2 * W, y: (1 - v3.y) / 2 * H };
+  }
+  function setPtr(e) {
+    var r = hero.getBoundingClientRect();
+    ptr.px = e.clientX - r.left; ptr.py = e.clientY - r.top; ptr.active = true;
+    ptr.x = ptr.px / r.width * 2 - 1; ptr.y = ptr.py / r.height * 2 - 1;
+    kick();
+  }
+  hero.addEventListener('pointermove', setPtr);
+  hero.addEventListener('pointerdown', function (e) {
+    setPtr(e);
+    if (e.target.closest('a, button')) return;
+    burst = 1; burstAt = performance.now() / 1000;
+  });
+  hero.addEventListener('pointerleave', function () { ptr.active = false; ptr.x = 0; ptr.y = 0; });
+
+  var t0 = performance.now(), running = false, raf = null, last = performance.now();
+  var ease = function (x) { return x >= 1 ? 1 : 1 - Math.pow(2, -10 * x); };
+  var back = function (x) { if (x >= 1) return 1; var c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+  function frame(now) {
+    raf = null;
+    var t = (now - t0) / 1000, sec = now / 1000, dt = Math.min(0.1, (now - last) / 1000); last = now;
+    var damp = function (rate) { return 1 - Math.exp(-rate * dt); };
+    tilt.x += (ptr.y * 0.10 - tilt.x) * damp(4); tilt.y += (ptr.x * 0.16 - tilt.y) * damp(4);
+    var leave = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / H));
+    word.position.set(base.x, base.y, 0);
+    word.scale.setScalar(fs * upp * (1 - 0.07 * leave));
+    word.rotation.x = tilt.x * 0.6; word.rotation.y = tilt.y * 0.6;
+
+    /* where the head should look */
+    var hs = headScreen();
+    if (ptr.active) {
+      var dx = ptr.px - hs.x, dy = ptr.py - hs.y;
+      faceT = dx < 0 ? Math.PI : 0;
+      var lookUp = Math.max(-0.45, Math.min(0.45, -dy / (H * 0.6)));
+      nod += (lookUp - nod) * damp(8);
+      var d = Math.sqrt(dx * dx + dy * dy);
+      near += (Math.max(0, 1 - d / 320) - near) * damp(6);
+    } else {
+      faceT = Math.PI;
+      nod += ((reduce ? 0 : Math.sin(t * 0.6) * 0.08) - nod) * damp(3);
+      near += (0 - near) * damp(3);
+    }
+    face += (faceT - face) * (reduce ? 1 : damp(11));
+    burst = Math.max(0, 1 - (sec - burstAt) / 1.4);
+
+    var he = reduce ? 1 : back(Math.max(0, t - 1.0) / 0.7);
+    mount.scale.setScalar(headEm * Math.max(0.0001, he));
+    head.rotation.y = face + (face > Math.PI / 2 ? -0.32 : 0.32) + (reduce ? 0 : Math.sin(t * 0.8) * 0.08);
+    head.rotation.z = nod;
+    head.position.y = burst * Math.max(0, Math.sin((sec - burstAt) * 14)) * 0.05;
+
+    var talkSpeed = 5.2 + near * 3 + burst * 4;
+    var speaking = reduce ? 1 : Math.min(1, Math.max(0, Math.sin(t * 1.3)) * 0.5 + 0.5 + near * 0.7 + burst);
+    waves.forEach(function (w, i) {
+      var pulse = reduce ? 1 : Math.max(0, Math.sin(t * talkSpeed - i * 0.9));
+      w.material.opacity = Math.min(1, (0.4 + 0.6 * pulse) * speaking);
+      w.scale.setScalar(0.9 + 0.12 * pulse + burst * 0.5 * (1 + i * 0.3));
+    });
+    letters.forEach(function (m, i) {
+      var e = reduce ? 1 : ease(Math.max(0, t - 0.15 - i * 0.07) / 0.9);
+      var talk = reduce ? 0 : Math.max(0, Math.sin(t * talkSpeed - i * 0.9)) * speaking * 0.03;
+      var lag = sec - burstAt - (4 - i) * 0.07;
+      var jump = (lag > 0 && lag < 0.5) ? Math.sin(lag / 0.5 * Math.PI) * 0.12 : 0;
+      m.position.y = -0.95 * (1 - e) + talk + jump;
+      m.position.z = talk * 2;
+    });
+    renderer.render(scene, camera);
+    if (running && !reduce) kick();
+  }
+  function kick() { if (!raf) raf = requestAnimationFrame(frame); }
+  function relayout() { layout(); kick(); }
+  if ('ResizeObserver' in window) new ResizeObserver(relayout).observe(hero); else window.addEventListener('resize', relayout);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
+  layout();
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { running = en[0].isIntersecting; if (running) kick(); }).observe(hero);
+  else running = true;
+  kick();
+})();
+</script>
+</body>
+</html>
