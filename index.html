@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Speak Lab</title>
 <meta name="description" content="Speak Lab, un concept d'outil d'oral en anglais pour le collège et le lycée, piloté par le professeur.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ff4a1f'/%3E%3Cpath d='M20 54c0-6-1-10-2-13-6-4-9-11-8-19C11 11 19 6 28 6c11 0 16 6 17 12l1 6c1 3 5 6 5 8 0 2-2 2-4 2l1 3-2 1 2 1c0 2-1 3-2 3 1 2 0 4-2 4-3 1-8 1-10 2-1 4 0 5 2 6z' fill='%2318191b'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Speak Lab">
+<meta property="og:description" content="Un concept d'outil d'oral en anglais pour le collège et le lycée, piloté par le professeur.">
+<meta property="og:url" content="https://aminebrr.github.io/Speak-Lab/">
+<meta property="og:image" content="https://aminebrr.github.io/Speak-Lab/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
@@ -106,6 +113,19 @@ html { scrollbar-color: var(--muted) var(--bg); }
 .ledger__cap a { color: var(--muted); font-size: var(--step-small); white-space: nowrap; }
 .ledger__cap a:hover { color: var(--ink); }
 
+/* ---------- band: one sentence on a full orange field, with the sound wave ---------- */
+.band { background: var(--accent); color: var(--accent-ink); padding-block: clamp(5rem, 11vw, 10rem) 0; overflow: hidden; }
+.band ::selection { background: var(--accent-ink); color: var(--accent); }
+.band h2 { font-size: clamp(1.9rem, 8.2vw, 6.75rem); max-width: 19ch; }
+.wavebar { display: flex; align-items: flex-end; gap: clamp(3px, 0.7vw, 10px); height: clamp(90px, 16vw, 220px); margin-top: clamp(40px, 6vw, 80px); }
+.wavebar i { flex: 1; background: currentColor; height: calc(var(--h) * 100%); transform-origin: bottom; border-radius: 999px 999px 0 0; }
+.wavebar--mid { align-items: center; height: clamp(40px, 6vw, 72px); margin: 0 0 clamp(40px, 6vw, 72px); color: var(--accent); }
+.wavebar--mid i { border-radius: 999px; transform-origin: center; }
+@media (prefers-reduced-motion: no-preference) {
+  .wavebar.is-live i { animation: bar 1.6s ease-in-out infinite; animation-delay: calc(var(--i) * -90ms); }
+  @keyframes bar { 50% { transform: scaleY(0.45); } }
+}
+
 /* ---------- calcul (two figures compared) ---------- */
 .calcul { background: var(--field); color: var(--field-ink); padding-block: var(--section) 0; }
 .calcul ::selection { background: var(--field-ink); color: var(--field); }
@@ -146,6 +166,12 @@ html { scrollbar-color: var(--muted) var(--bg); }
 .room__key .k-ink { background: var(--field-ink); }
 .room__key .k-acc { background: var(--accent); }
 .room[hidden] { display: none; }
+.room__modes { display: flex; flex-wrap: wrap; gap: 0; margin-bottom: 16px; }
+.room__mode { font: inherit; font-weight: 600; border: 0; cursor: pointer; padding: 0.7em 1.1em; background: #dfe0e3; color: var(--field-ink); transition: background-color var(--t-hover) ease, color var(--t-hover) ease, transform var(--t-press) var(--ease-out); }
+.room__mode:hover { background: #d2d3d7; }
+.room__mode:active { transform: scale(0.97); }
+.room__mode[aria-pressed=true] { background: var(--field-ink); color: var(--field); }
+.room__mode:focus-visible { outline: 3px solid var(--accent-deep); outline-offset: 2px; }
 
 /* ---------- semaine (itinerary slip) ---------- */
 .semaine { background: var(--bg); padding-block: var(--section); }
@@ -236,6 +262,52 @@ html { scrollbar-color: var(--muted) var(--bg); }
 [data-ui] .lvl .badge { justify-self: start; font-size: 13px; font-weight: 800; color: var(--l-acc-deep); background: var(--l-acc-soft); border-radius: 999px; padding: 3px 10px; }
 [data-ui] .lvl[aria-checked=true] .badge { background: var(--l-card); }
 
+/* screen 1: the path of levels */
+[data-ui] .path { position: relative; display: grid; gap: 22px; padding: 8px 0 4px; --unit: clamp(40px, 9vw, 92px); }
+[data-ui] .path__line { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+[data-ui] .path__line path { fill: none; stroke: #e1e2e5; stroke-width: 12; stroke-linecap: round; stroke-dasharray: 1 26; }
+[data-ui] .stop { position: relative; display: grid; grid-template-columns: 84px auto; align-items: center; gap: 16px; justify-content: center; transform: translateX(calc(var(--x) * var(--unit))); width: max-content; justify-self: center; }
+[data-ui] .stop__meta { font-weight: 600; font-size: 15px; color: var(--l-mute); line-height: 1.25; white-space: nowrap; }
+[data-ui] .stop__meta b { display: block; font-weight: 800; font-size: 17px; color: var(--l-ink); }
+[data-ui] .stop--locked .stop__meta b { color: var(--l-mute); }
+[data-ui] .node { position: relative; padding: 0; width: 84px; height: 76px; border-radius: 50%; border: 0; font: inherit; display: grid; place-items: center; cursor: pointer; background: var(--l-acc); color: #fff; box-shadow: 0 8px 0 var(--l-acc-deep); transition: transform 90ms ease, box-shadow 90ms ease, filter 150ms ease; }
+[data-ui] .node b { font-size: 26px; font-weight: 800; letter-spacing: -0.04em; }
+[data-ui] .node:hover { filter: brightness(1.07); }
+[data-ui] .node:active { transform: translateY(8px); box-shadow: 0 0 0 var(--l-acc-deep); }
+[data-ui] .node:focus-visible { outline: 3px solid var(--l-ink); outline-offset: 5px; }
+[data-ui] .node[aria-checked=true] { outline: 5px solid var(--l-acc-soft); outline-offset: 5px; animation: node-pulse 1.6s ease-in-out infinite; }
+@keyframes node-pulse { 50% { outline-offset: 9px; } }
+[data-ui] .node--locked { background: #e7e8eb; box-shadow: 0 8px 0 #cfd0d4; cursor: default; }
+[data-ui] .node--locked svg { width: 26px; height: 26px; fill: #a4a6ab; }
+[data-ui] .node__done { position: absolute; right: -4px; top: -6px; width: 28px; height: 28px; border-radius: 50%; background: var(--l-ink); display: none; place-items: center; border: 3px solid var(--l-card); }
+[data-ui] .node__done svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+[data-ui] .node.is-done .node__done { display: grid; }
+[data-ui] .path__me { position: absolute; left: 0; top: 0; width: 58px; pointer-events: none; transition: transform 520ms cubic-bezier(0.34, 1.4, 0.64, 1); z-index: 2; }
+[data-ui] .path__me .mascot { width: 58px; }
+[data-ui] .path__me .mascot__waves path { opacity: 1; }
+
+/* the character's moods */
+[data-ui] .mascot { transform-origin: 40% 100%; }
+[data-ui] .is-happy .mascot { animation: m-hop 620ms cubic-bezier(0.3, 0, 0.3, 1) 3; }
+[data-ui] .is-happy .mascot__waves path { opacity: 1; }
+[data-ui] .is-cheer .mascot { animation: m-nod 900ms ease-in-out 2; }
+[data-ui] .is-listen .mascot { animation: m-listen 2.4s ease-in-out infinite; }
+[data-ui] .is-listen .mascot__waves path { animation: wave-in 1.2s ease-in-out infinite; }
+[data-ui] .is-listen .mascot__waves path:nth-child(2) { animation-delay: -150ms; }
+[data-ui] .is-listen .mascot__waves path:nth-child(1) { animation-delay: -300ms; }
+[data-ui] .is-think .mascot { animation: m-think 3s ease-in-out infinite; }
+@keyframes m-hop { 0%, 100% { transform: translateY(0) rotate(0); } 40% { transform: translateY(-16px) rotate(-6deg); } 70% { transform: translateY(0) rotate(2deg); } }
+@keyframes m-nod { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(7deg); } 60% { transform: rotate(-2deg); } }
+@keyframes m-listen { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(-3deg); } }
+@keyframes m-think { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-9deg) translateY(-2px); } }
+@keyframes wave-in { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.9; } }
+[data-ui] .peek { position: absolute; right: clamp(20px, 5vw, 56px); bottom: 100%; width: 100px; height: 60px; overflow: hidden; pointer-events: none; }
+[data-ui] .peek .mascot { width: 84px; transform: translateY(105%); transition: transform 460ms cubic-bezier(0.34, 1.4, 0.64, 1); animation: none !important; }
+[data-ui] .is-good .peek .mascot, [data-ui] .is-meh .peek .mascot { transform: translateY(12%); }
+[data-ui] .is-good .peek .mascot__waves path { opacity: 1; animation: wave 900ms ease-in-out infinite; }
+[data-ui] .l-foot { position: relative; }
+[data-ui] .speak-wave { display: block; width: min(100%, 420px); height: 56px; }
+
 /* screen 2: the mascot speaks the task */
 [data-ui] .talk { display: grid; grid-template-columns: 124px minmax(0, 1fr); gap: 14px; align-items: end; }
 [data-ui] .mascot { width: 124px; height: auto; display: block; }
@@ -303,12 +375,14 @@ html { scrollbar-color: var(--muted) var(--bg); }
 [data-ui] .is-meh .fb__t { color: var(--l-ink); }
 [data-ui] .fb__s { font-size: 15px; color: var(--l-ink); }
 @keyframes pop { from { transform: scale(0.4); opacity: 0; } }
+[data-ui] .bit { position: absolute; width: 10px; height: 14px; border-radius: 3px; pointer-events: none; animation: bit 1100ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+@keyframes bit { from { transform: translate(0, 0) rotate(0); opacity: 1; } to { transform: translate(var(--dx), var(--dy)) rotate(var(--r)); opacity: 0; } }
 [data-ui] .xp-fly { position: absolute; white-space: nowrap; transform: translateX(-30%); font-weight: 800; color: var(--l-acc); pointer-events: none; animation: fly 1100ms ease-out both; }
 @keyframes fly { to { transform: translate(-30%, 40px); opacity: 0; } }
 @media (max-width: 560px) {
   [data-ui].lesson { border-radius: 22px; min-height: 600px; font-size: 17px; }
-  [data-ui] .levels3 { grid-template-columns: 1fr; }
-  [data-ui] .lvl { grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; padding: 14px 16px; }
+  [data-ui] .path { --unit: 34px; }
+  [data-ui] .stop__meta { font-size: 14px; }
   [data-ui] .talk { grid-template-columns: 84px minmax(0, 1fr); }
   [data-ui] .mascot { width: 84px; }
   [data-ui] .bubble p { font-size: 19px; }
@@ -337,6 +411,13 @@ html { scrollbar-color: var(--muted) var(--bg); }
 .prof__intro h2 { font-size: var(--step-mega); }
 .prof__intro p { max-width: 34ch; }
 .prof__shot { grid-column: 5 / 13; min-width: 0; }
+.prof__shot { position: relative; }
+.prof__shot [data-ui].desk { position: relative; z-index: 1; }
+.peeker { position: absolute; right: 12%; top: 0; width: clamp(70px, 8vw, 110px); transform: translateY(-58%); transition: transform 500ms cubic-bezier(0.34, 1.4, 0.64, 1); }
+.peeker .mascot { width: 100%; height: auto; display: block; transform: scaleX(-1); }
+.peeker .mascot__head { fill: var(--ink); }
+.peeker .mascot__waves path { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; }
+.prof__shot:hover .peeker { transform: translateY(-74%); }
 .prof__note { margin-top: 12px; color: var(--muted); font-size: var(--step-small); }
 [data-ui].desk { background: #f6f6f7; color: #18191b; border-radius: 10px; overflow: hidden; font-size: 14px; line-height: 1.35; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35); }
 [data-ui] .dk-bar { display: flex; align-items: center; gap: 14px; background: #dcdde0; padding: 10px 14px; }
@@ -363,12 +444,36 @@ html { scrollbar-color: var(--muted) var(--bg); }
 [data-ui] tr.is-row { transition: background-color 160ms ease; }
 [data-ui] tr.is-row:hover { background: #ececee; }
 [data-ui] .dk-foot { margin-top: 12px; font-size: 12px; color: #6a6c71; }
+[data-ui] tr.is-row { cursor: pointer; }
+[data-ui] tr.is-row:focus-visible { outline: 2px solid #ff4a1f; outline-offset: -2px; }
+[data-ui] tr.is-row.is-open { background: #ffe3d9; }
+[data-ui] .dk-detail { margin-top: 14px; background: #fff; border: 1px solid #d2d3d6; border-radius: 10px; padding: 16px 18px; display: grid; gap: 12px; }
+[data-ui] .dk-detail[hidden], [data-ui] #dk-d-missing[hidden], [data-ui] #dk-d-done[hidden] { display: none; }
+[data-ui] #dk-d-done, [data-ui] #dk-d-missing { display: grid; gap: 12px; justify-items: start; }
+[data-ui] .dk-d-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+[data-ui] .dk-x { font: inherit; font-size: 12px; background: none; border: 0; color: #54565b; cursor: pointer; text-decoration: underline; }
+[data-ui] .dk-player { display: flex; align-items: center; gap: 12px; width: 100%; font-variant-numeric: tabular-nums; font-size: 13px; }
+[data-ui] .dk-play { width: 36px; height: 36px; border-radius: 50%; border: 0; background: #18191b; display: grid; place-items: center; cursor: pointer; flex: none; transition: transform 120ms ease; }
+[data-ui] .dk-play:active { transform: scale(0.92); }
+[data-ui] .dk-play svg { width: 12px; height: 12px; fill: #fff; margin-left: 2px; }
+[data-ui] .dk-track { flex: 1; height: 6px; background: #e3e4e6; border-radius: 999px; overflow: hidden; }
+[data-ui] .dk-track i { display: block; height: 100%; width: 0; background: #ff4a1f; }
+[data-ui] .dk-crit { display: grid; gap: 8px; width: 100%; }
+[data-ui] .dk-crit div { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+[data-ui] .dk-crit button { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #ff4a1f; background: transparent; cursor: pointer; padding: 0; margin-left: 4px; transition: background-color 120ms ease, transform 120ms ease; }
+[data-ui] .dk-crit button.on { background: #ff4a1f; }
+[data-ui] .dk-crit button:active { transform: scale(0.88); }
+[data-ui] .dk-btn { font: inherit; font-weight: 600; font-size: 13px; background: #18191b; color: #fff; border: 0; border-radius: 8px; padding: 8px 14px; cursor: pointer; transition: transform 120ms ease, background-color 150ms ease; }
+[data-ui] .dk-btn:hover { background: #b52c0a; }
+[data-ui] .dk-btn:active { transform: scale(0.97); }
+[data-ui] .dk-btn[disabled] { background: #e6e7e9; color: #54565b; cursor: default; }
 
 /* ---------- textes (names as one sentence) ---------- */
-.textes { background: var(--bg); padding-block: clamp(7rem, 12vw, 10rem); }
+.textes { background: var(--mark); color: var(--field-ink); padding-block: clamp(7rem, 12vw, 10rem); }
+.textes ::selection { background: var(--field-ink); color: var(--mark); }
 .textes__sent { grid-column: 1 / 11; font-size: var(--step-lead); line-height: 1.3; letter-spacing: -0.03em; font-weight: 600; max-width: 44ch; }
-.textes__sent a { color: var(--muted); text-decoration: none; transition: color 400ms ease; }
-.textes__sent a.is-lit, .textes__sent a:hover, .textes__sent a:focus-visible { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 3px; }
+.textes__sent a { color: #7d4a3a; text-decoration: none; transition: color 400ms ease; }
+.textes__sent a.is-lit, .textes__sent a:hover, .textes__sent a:focus-visible { color: var(--field-ink); text-decoration: underline; text-decoration-color: var(--accent-deep); text-decoration-thickness: 3px; }
 .textes__also { grid-column: 1 / 8; margin-top: 40px; max-width: 60ch; }
 
 /* ---------- feuille de route (line-up) ---------- */
@@ -378,7 +483,9 @@ html { scrollbar-color: var(--muted) var(--bg); }
 .lineup { width: 100%; border-collapse: collapse; font-size: clamp(1.125rem, 0.6rem + 1.3vw, 1.875rem); font-size: var(--step-lead); }
 .lineup th, .lineup td { text-align: left; font-weight: 400; padding: 0; height: 1.6em; vertical-align: baseline; }
 .lineup td:last-child { text-align: right; }
-.lineup .col-a { width: 38%; } .lineup .col-b { width: 20%; } .lineup .col-c { width: 20%; }
+.lineup .col-a { width: 36%; } .lineup .col-b { width: 23%; } .lineup .col-c { width: 22%; }
+.lineup td { padding-right: 1em; }
+.lineup td:last-child { padding-right: 0; }
 .lineup tbody th { color: var(--accent-deep); font-weight: 600; padding-top: 56px; padding-bottom: 12px; }
 .lineup tbody:first-of-type th { padding-top: 0; }
 .lineup .note td { color: var(--field-muted); }
@@ -431,6 +538,7 @@ html { scrollbar-color: var(--muted) var(--bg); }
 }
 
 /* ---------- phone ---------- */
+@media (max-width: 1180px) and (min-width: 861px) { .lineup { font-size: var(--step-body); } }
 @media (max-width: 860px) {
   .prof__intro, .prof__shot, .essai__head h2, .essai__head p { grid-column: 1 / -1; }
   .levels { width: 100%; }
@@ -539,6 +647,13 @@ html { scrollbar-color: var(--muted) var(--bg); }
   </div>
 </section>
 
+<section class="band" aria-labelledby="band-h">
+  <div class="wrap">
+    <h2 id="band-h" class="in">Une langue s'apprend en la parlant.</h2>
+    <div class="wavebar" data-bars="64" aria-hidden="true"></div>
+  </div>
+</section>
+
 <section class="calcul" id="calcul" aria-labelledby="calcul-h">
   <div class="wrap">
     <div class="grid calcul__head">
@@ -553,9 +668,13 @@ html { scrollbar-color: var(--muted) var(--bg); }
       <p class="hyp">Estimation, pas une mesure&nbsp;: 36 semaines de cours, des séances de 55 minutes, un élève parle à la fois, chaque enregistrement dure 3 minutes. Les hypothèses sont modifiables.</p>
     </div>
     <figure class="room" id="room" hidden>
+      <div class="room__modes" role="group" aria-label="Répartition de la parole en classe">
+        <button class="room__mode" type="button" data-mode="avg" aria-pressed="true">En moyenne</button>
+        <button class="room__mode" type="button" data-mode="vol" aria-pressed="false">Quand seuls les volontaires parlent</button>
+      </div>
       <figcaption class="room__cap">
         <span class="room__key"><span><i class="k-ink"></i>Minutes en classe</span><span><i class="k-acc"></i>Minutes ajoutées par Speak Lab</span></span>
-        <span>Une colonne par élève, à la moyenne de la classe. Faites glisser pour tourner la salle.</span>
+        <span id="room-note">Une colonne par élève, à la moyenne de la classe. Faites glisser pour tourner la salle.</span>
       </figcaption>
       <div class="room__stage" id="room-stage" aria-hidden="true"></div>
     </figure>
@@ -616,6 +735,7 @@ html { scrollbar-color: var(--muted) var(--bg); }
 
 <section class="essai" id="essayer" aria-labelledby="essai-h">
   <div class="wrap">
+    <div class="wavebar wavebar--mid" data-bars="72" aria-hidden="true"></div>
     <div class="grid essai__head">
       <h2 id="essai-h" class="in">Essayer une tâche</h2>
       <p class="in d1">Choisissez un niveau, préparez-vous trente secondes, puis parlez à voix haute pendant que le minuteur tourne. Ensuite, cochez ce que vous avez réussi. Rien n'est enregistré.</p>
@@ -636,10 +756,15 @@ html { scrollbar-color: var(--muted) var(--bg); }
               <svg class="mascot" viewBox="0 0 150 128" aria-hidden="true"><path class="mascot__head" d="M 30.0 124.0 C 31.0 112.0 28.0 100.0 26.0 92.0 C 14.0 84.0 5.0 68.0 6.0 50.0 C 7.0 22.0 26.0 4.0 48.0 4.0 C 72.0 4.0 85.0 16.0 86.0 30.0 C 87.0 36.0 87.0 41.0 88.0 44.0 C 91.0 50.0 100.0 57.0 100.0 62.0 C 100.0 66.0 95.0 67.0 92.0 67.0 C 94.0 68.5 95.0 71.0 95.0 73.0 L 90.5 74.5 L 94.0 77.0 C 95.0 80.0 93.0 83.0 90.0 84.0 C 92.0 87.0 90.0 91.0 86.0 92.0 C 80.0 94.0 70.0 94.0 66.0 97.0 C 64.0 106.0 66.0 118.0 70.0 124.0 Z"/><g class="mascot__waves" transform="translate(104 74)"><path d="M0 -10 A10 10 0 0 1 0 10"/><path d="M8 -20 A22 22 0 0 1 8 20"/><path d="M16 -30 A34 34 0 0 1 16 30"/></g></svg>
               <div class="bubble"><p>Salut&nbsp;! Choisis ton niveau, puis on parle anglais.</p></div>
             </div>
-            <div class="levels3" role="radiogroup" aria-label="Niveau">
-              <button class="tile lvl" role="radio" aria-checked="false" data-level="6e" type="button"><b>6<sup>e</sup></b><small>45 secondes</small><span class="badge">A1+</span></button>
-              <button class="tile lvl" role="radio" aria-checked="false" data-level="4e" type="button"><b>4<sup>e</sup></b><small>1 min 30</small><span class="badge">A2+</span></button>
-              <button class="tile lvl" role="radio" aria-checked="false" data-level="2de" type="button"><b>Seconde</b><small>2 minutes</small><span class="badge">B1</span></button>
+            <div class="path" id="path" role="radiogroup" aria-label="Niveau">
+              <svg class="path__line" id="path-line" aria-hidden="true"><path id="path-d" d=""/></svg>
+              <span class="path__me" id="path-me" aria-hidden="true"><svg class="mascot" viewBox="0 0 150 128" aria-hidden="true"><path class="mascot__head" d="M 30.0 124.0 C 31.0 112.0 28.0 100.0 26.0 92.0 C 14.0 84.0 5.0 68.0 6.0 50.0 C 7.0 22.0 26.0 4.0 48.0 4.0 C 72.0 4.0 85.0 16.0 86.0 30.0 C 87.0 36.0 87.0 41.0 88.0 44.0 C 91.0 50.0 100.0 57.0 100.0 62.0 C 100.0 66.0 95.0 67.0 92.0 67.0 C 94.0 68.5 95.0 71.0 95.0 73.0 L 90.5 74.5 L 94.0 77.0 C 95.0 80.0 93.0 83.0 90.0 84.0 C 92.0 87.0 90.0 91.0 86.0 92.0 C 80.0 94.0 70.0 94.0 66.0 97.0 C 64.0 106.0 66.0 118.0 70.0 124.0 Z"/><g class="mascot__waves" transform="translate(104 74)"><path d="M0 -10 A10 10 0 0 1 0 10"/><path d="M8 -20 A22 22 0 0 1 8 20"/><path d="M16 -30 A34 34 0 0 1 16 30"/></g></svg></span>
+              <div class="stop" style="--x:-1"><button class="lvl node" role="radio" aria-checked="false" data-level="6e" type="button" aria-label="Sixième · A1+ · 45 secondes"><b>6<sup>e</sup></b><span class="node__done" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8.500l3.200 3L13 4.500"/></svg></span></button><span class="stop__meta"><b>Sixième</b>A1+ · 45 secondes</span></div>
+              <div class="stop stop--locked" style="--x:0"><span class="node node--locked" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2h1.5A1.5 1.5 0 0 1 20 11.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19.5v-8A1.5 1.5 0 0 1 5.500 10zm2.500 0h5V8a2.500 2.500 0 0 0-5 0z"/></svg></span><span class="stop__meta"><b>Cinquième</b>bientôt</span></div>
+              <div class="stop" style="--x:1"><button class="lvl node" role="radio" aria-checked="false" data-level="4e" type="button" aria-label="Quatrième · A2+ · 1 min 30"><b>4<sup>e</sup></b><span class="node__done" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8.500l3.200 3L13 4.500"/></svg></span></button><span class="stop__meta"><b>Quatrième</b>A2+ · 1 min 30</span></div>
+              <div class="stop stop--locked" style="--x:0.4"><span class="node node--locked" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2h1.5A1.5 1.5 0 0 1 20 11.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19.5v-8A1.5 1.5 0 0 1 5.500 10zm2.500 0h5V8a2.500 2.500 0 0 0-5 0z"/></svg></span><span class="stop__meta"><b>Troisième</b>bientôt</span></div>
+              <div class="stop" style="--x:-0.7"><button class="lvl node" role="radio" aria-checked="false" data-level="2de" type="button" aria-label="Seconde · B1 · 2 minutes"><b>2<sup>de</sup></b><span class="node__done" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8.500l3.200 3L13 4.500"/></svg></span></button><span class="stop__meta"><b>Seconde</b>B1 · 2 minutes</span></div>
+              <div class="stop stop--locked" style="--x:0.2"><span class="node node--locked" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2h1.5A1.5 1.5 0 0 1 20 11.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19.5v-8A1.5 1.5 0 0 1 5.500 10zm2.500 0h5V8a2.500 2.500 0 0 0-5 0z"/></svg></span><span class="stop__meta"><b>Terminale</b>bientôt</span></div>
             </div>
           </section>
 
@@ -661,7 +786,7 @@ html { scrollbar-color: var(--muted) var(--bg); }
             <h3 class="l-title">Prépare-toi</h3>
             <div class="ring-wrap">
               <div class="ring"><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="trk" cx="100" cy="100" r="84"/><circle class="val" id="prep-ring" cx="100" cy="100" r="84"/></svg><div class="ring__num" id="prep-num">30</div></div>
-              <p class="tip">Pense à trois idées. Dis-les dans ta tête avec les mots utiles.</p>
+              <div class="talk talk--mini is-think"><svg class="mascot" viewBox="0 0 150 128" aria-hidden="true"><path class="mascot__head" d="M 30.0 124.0 C 31.0 112.0 28.0 100.0 26.0 92.0 C 14.0 84.0 5.0 68.0 6.0 50.0 C 7.0 22.0 26.0 4.0 48.0 4.0 C 72.0 4.0 85.0 16.0 86.0 30.0 C 87.0 36.0 87.0 41.0 88.0 44.0 C 91.0 50.0 100.0 57.0 100.0 62.0 C 100.0 66.0 95.0 67.0 92.0 67.0 C 94.0 68.5 95.0 71.0 95.0 73.0 L 90.5 74.5 L 94.0 77.0 C 95.0 80.0 93.0 83.0 90.0 84.0 C 92.0 87.0 90.0 91.0 86.0 92.0 C 80.0 94.0 70.0 94.0 66.0 97.0 C 64.0 106.0 66.0 118.0 70.0 124.0 Z"/><g class="mascot__waves" transform="translate(104 74)"><path d="M0 -10 A10 10 0 0 1 0 10"/><path d="M8 -20 A22 22 0 0 1 8 20"/><path d="M16 -30 A34 34 0 0 1 16 30"/></g></svg><p class="tip">Pense à trois idées. Dis-les dans ta tête avec les mots utiles.</p></div>
             </div>
           </section>
 
@@ -670,6 +795,7 @@ html { scrollbar-color: var(--muted) var(--bg); }
             <div class="ring-wrap">
               <div class="ring" id="speak-ring-box"><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="trk" cx="100" cy="100" r="84"/><circle class="val" id="speak-ring" cx="100" cy="100" r="84"/></svg><div class="ring__num"><span id="speak-num">1:30</span></div></div>
               <div class="talk talk--mini" id="speak-mascot"><svg class="mascot" viewBox="0 0 150 128" aria-hidden="true"><path class="mascot__head" d="M 30.0 124.0 C 31.0 112.0 28.0 100.0 26.0 92.0 C 14.0 84.0 5.0 68.0 6.0 50.0 C 7.0 22.0 26.0 4.0 48.0 4.0 C 72.0 4.0 85.0 16.0 86.0 30.0 C 87.0 36.0 87.0 41.0 88.0 44.0 C 91.0 50.0 100.0 57.0 100.0 62.0 C 100.0 66.0 95.0 67.0 92.0 67.0 C 94.0 68.5 95.0 71.0 95.0 73.0 L 90.5 74.5 L 94.0 77.0 C 95.0 80.0 93.0 83.0 90.0 84.0 C 92.0 87.0 90.0 91.0 86.0 92.0 C 80.0 94.0 70.0 94.0 66.0 97.0 C 64.0 106.0 66.0 118.0 70.0 124.0 Z"/><g class="mascot__waves" transform="translate(104 74)"><path d="M0 -10 A10 10 0 0 1 0 10"/><path d="M8 -20 A22 22 0 0 1 8 20"/><path d="M16 -30 A34 34 0 0 1 16 30"/></g></svg><p class="tip" lang="en" id="l-prompt2">Describe your dream school.</p></div>
+              <canvas class="speak-wave" id="speak-wave" width="840" height="112" aria-hidden="true"></canvas>
               <div class="row-btns"><button class="chunk" id="speak-go" type="button">Je commence</button></div>
               <p class="note">Parle à voix haute. Rien n'est enregistré.</p>
             </div>
@@ -685,6 +811,7 @@ html { scrollbar-color: var(--muted) var(--bg); }
           </section>
         </div>
         <div class="l-foot" id="l-foot">
+          <span class="peek" id="peek" aria-hidden="true"><svg class="mascot" viewBox="0 0 150 128" aria-hidden="true"><path class="mascot__head" d="M 30.0 124.0 C 31.0 112.0 28.0 100.0 26.0 92.0 C 14.0 84.0 5.0 68.0 6.0 50.0 C 7.0 22.0 26.0 4.0 48.0 4.0 C 72.0 4.0 85.0 16.0 86.0 30.0 C 87.0 36.0 87.0 41.0 88.0 44.0 C 91.0 50.0 100.0 57.0 100.0 62.0 C 100.0 66.0 95.0 67.0 92.0 67.0 C 94.0 68.5 95.0 71.0 95.0 73.0 L 90.5 74.5 L 94.0 77.0 C 95.0 80.0 93.0 83.0 90.0 84.0 C 92.0 87.0 90.0 91.0 86.0 92.0 C 80.0 94.0 70.0 94.0 66.0 97.0 C 64.0 106.0 66.0 118.0 70.0 124.0 Z"/><g class="mascot__waves" transform="translate(104 74)"><path d="M0 -10 A10 10 0 0 1 0 10"/><path d="M8 -20 A22 22 0 0 1 8 20"/><path d="M16 -30 A34 34 0 0 1 16 30"/></g></svg></span>
           <div class="fb" id="fb" hidden><span class="fb__icon"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><span class="fb__t" id="fb-t"></span><br><span class="fb__s" id="fb-s"></span></span></div>
           <button class="chunk chunk--ghost" id="l-skip" type="button" hidden>Passer</button>
           <span></span>
@@ -717,6 +844,7 @@ html { scrollbar-color: var(--muted) var(--bg); }
       <p class="in d1">Qui a rendu, qui a besoin d'aide, quels critères sont acquis. Le vendredi, le professeur écoute d'abord les élèves signalés, puis prépare le retour en classe.</p>
     </div>
     <div class="prof__shot in d1">
+      <span class="peeker" aria-hidden="true"><svg class="mascot" viewBox="0 0 150 128" aria-hidden="true"><path class="mascot__head" d="M 30.0 124.0 C 31.0 112.0 28.0 100.0 26.0 92.0 C 14.0 84.0 5.0 68.0 6.0 50.0 C 7.0 22.0 26.0 4.0 48.0 4.0 C 72.0 4.0 85.0 16.0 86.0 30.0 C 87.0 36.0 87.0 41.0 88.0 44.0 C 91.0 50.0 100.0 57.0 100.0 62.0 C 100.0 66.0 95.0 67.0 92.0 67.0 C 94.0 68.5 95.0 71.0 95.0 73.0 L 90.5 74.5 L 94.0 77.0 C 95.0 80.0 93.0 83.0 90.0 84.0 C 92.0 87.0 90.0 91.0 86.0 92.0 C 80.0 94.0 70.0 94.0 66.0 97.0 C 64.0 106.0 66.0 118.0 70.0 124.0 Z"/><g class="mascot__waves" transform="translate(104 74)"><path d="M0 -10 A10 10 0 0 1 0 10"/><path d="M8 -20 A22 22 0 0 1 8 20"/><path d="M16 -30 A34 34 0 0 1 16 30"/></g></svg></span>
       <div data-ui class="desk" aria-label="Maquette de l'écran professeur">
         <div class="dk-bar"><span class="dk-dots"><i></i><i></i><i></i></span><span class="dk-url">Speak Lab · 4e B</span></div>
         <div class="dk-body">
@@ -732,7 +860,17 @@ html { scrollbar-color: var(--muted) var(--bg); }
 <tr class="is-row"><td>Emma</td><td>1:27</td><td><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i></span></td><td><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i></span></td><td><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i></span></td><td><span class="chip">écouté</span></td></tr>
 <tr class="is-row"><td>Noah</td><td>1:05</td><td><span class="dots"><i class="on"></i><i class="on"></i><i></i></span></td><td><span class="dots"><i class="on"></i><i></i><i></i></span></td><td><span class="dots"><i class="on"></i><i></i><i></i></span></td><td><span class="chip prio">à écouter</span></td></tr></tbody>
           </table>
-          <p class="dk-foot">18 autres élèves · prénoms fictifs</p>
+          <div class="dk-detail" id="dk-detail" hidden>
+            <div class="dk-d-head"><p class="dk-t" id="dk-d-name"></p><button class="dk-x" id="dk-d-close" type="button" aria-label="Fermer">Fermer</button></div>
+            <div id="dk-d-done">
+              <div class="dk-player"><button class="dk-play" id="dk-d-play" type="button" aria-label="Lire l'extrait"><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></button><div class="dk-track"><i id="dk-d-fill"></i></div><span id="dk-d-dur"></span></div>
+              <p class="dk-foot">Lecture simulée, sans son.</p>
+              <div class="dk-crit" id="dk-d-crit"></div>
+              <button class="dk-btn" id="dk-d-mark" type="button">Marquer comme écouté</button>
+            </div>
+            <div id="dk-d-missing" hidden><p>Pas encore rendu.</p><button class="dk-btn" id="dk-d-remind" type="button">Envoyer un rappel</button></div>
+          </div>
+          <p class="dk-foot">18 autres élèves · prénoms fictifs · cliquez sur un élève</p>
         </div>
       </div>
       <p class="prof__note">Maquette de l'écran professeur, données d'exemple.</p>
@@ -863,6 +1001,33 @@ html { scrollbar-color: var(--muted) var(--bg); }
   ['c-eleves', 'c-heures', 'c-part', 'c-taches'].forEach(function (id) { $(id).addEventListener('input', calc); });
   calc();
 
+  /* the six figures count up the first time they are seen */
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return; io.unobserve(en.target);
+        var el = en.target, to = parseInt(el.textContent, 10), start = null;
+        if (!to) return;
+        requestAnimationFrame(function stepUp(now) {
+          if (start === null) start = now;
+          var k = Math.min(1, (now - start) / 900), e = 1 - Math.pow(1 - k, 3);
+          el.textContent = Math.round(to * e);
+          if (k < 1) requestAnimationFrame(stepUp);
+        });
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('.ledger__whole').forEach(function (el) { io.observe(el); });
+  }
+
+  /* the sound-wave bars: built once, moving only while on screen */
+  document.querySelectorAll('.wavebar').forEach(function (wb) {
+    var n = +wb.dataset.bars || 48, html = '';
+    if (window.innerWidth < 700) n = Math.round(n / 2);
+    for (var i = 0; i < n; i++) { var h = 0.14 + 0.86 * Math.abs(Math.sin(i * 0.42) * Math.sin(i * 0.137 + 0.6)); html += '<i style="--h:' + h.toFixed(3) + ';--i:' + i + '"></i>'; }
+    wb.innerHTML = html;
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { wb.classList.toggle('is-live', en[0].isIntersecting); }).observe(wb);
+  });
+
   /* the texts: one name lit at a time */
   var names = document.querySelectorAll('.textes__sent a'), lit = 0;
   if (names.length) {
@@ -938,8 +1103,9 @@ html { scrollbar-color: var(--muted) var(--bg); }
   ['prep-ring', 'speak-ring'].forEach(function (id) { $(id).style.strokeDasharray = C; $(id).style.strokeDashoffset = 0; });
   var mmss = function (n) { return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0'); };
   var clock = function (n) { return mmss(n).replace(':', '<span class="colon">:</span>'); };
-  function stopTimer() { if (timer) { clearInterval(timer); timer = null; } setTalking(false); }
-  function setTalking(on) { document.querySelectorAll('#lesson .talk:not(.talk--hello), #speak-ring-box').forEach(function (el) { el.classList.toggle('is-talking', on); }); }
+  var pupilSpeaking = false;
+  function stopTimer() { if (timer) { clearInterval(timer); timer = null; } setTalking(false); pupilSpeaking = false; $('speak-mascot').classList.remove('is-listen'); }
+  function setTalking(on) { if (window.SpeakHead) window.SpeakHead.talk(on ? 0.8 : 0); document.querySelectorAll('#lesson .talk:not(.talk--hello):not(.is-think):not(#speak-mascot), #speak-ring-box').forEach(function (el) { el.classList.toggle('is-talking', on); }); }
   function ring(id, left, total) { $(id).style.strokeDashoffset = C * (1 - left / total); }
 
   function go(n) {
@@ -949,13 +1115,14 @@ html { scrollbar-color: var(--muted) var(--bg); }
     $('l-step').textContent = 'Étape ' + (n + 1) + ' sur 5 · ' + STEPS[n];
     $('l-fill').style.width = (n / 5 * 100) + '%';
     $('l-bar').setAttribute('aria-valuenow', n);
-    fb.hidden = true; foot.classList.remove('is-good', 'is-meh'); judged = false;
+    fb.hidden = true; foot.classList.remove('is-good', 'is-meh', 'is-happy', 'is-cheer'); judged = false;
+    if (n === 0) setTimeout(placePath, 30);
     skip.hidden = !(n === 2 || n === 3);
     skip.textContent = n === 2 ? 'Je suis prêt' : "J'ai fini";
     next.textContent = n === 4 ? 'Vérifier' : 'Continuer';
     next.disabled = (n === 0 && !lv) || n === 2 || n === 3;
     if (n === 2) prep();
-    if (n === 3) { var t = TASKS[lv]; $('speak-num').innerHTML = clock(t.speak); ring('speak-ring', t.speak, t.speak); $('speak-go').hidden = false; }
+    if (n === 3) { setTimeout(drawWave, 0); var t = TASKS[lv]; $('speak-num').innerHTML = clock(t.speak); ring('speak-ring', t.speak, t.speak); $('speak-go').hidden = false; }
     if (n === 4) { checked = [false, false, false]; paintChecks(); next.disabled = false; }
   }
   function load() {
@@ -971,7 +1138,7 @@ html { scrollbar-color: var(--muted) var(--bg); }
     timer = setInterval(function () { left -= 1; $('prep-num').textContent = left; ring('prep-ring', left, 30); if (left <= 0) { stopTimer(); go(3); } }, 1000);
   }
   $('speak-go').addEventListener('click', function () {
-    var total = TASKS[lv].speak, left = total; this.hidden = true; setTalking(true);
+    var total = TASKS[lv].speak, left = total; this.hidden = true; setTalking(true); pupilSpeaking = true; $('speak-mascot').classList.add('is-listen'); drawWave();
     $('speak-num').innerHTML = clock(left);
     timer = setInterval(function () {
       left -= 1; $('speak-num').innerHTML = clock(left); ring('speak-ring', left, total);
@@ -982,13 +1149,55 @@ html { scrollbar-color: var(--muted) var(--bg); }
     b.addEventListener('click', function () {
       lv = b.dataset.level;
       document.querySelectorAll('#lesson .lvl').forEach(function (o) { o.setAttribute('aria-checked', o === b ? 'true' : 'false'); });
-      load(); next.disabled = false;
+      load(); next.disabled = false; next.textContent = 'Commencer'; placeMe();
     });
   });
   function paintChecks() { document.querySelectorAll('#lesson .crit .tile').forEach(function (tl, i) { tl.setAttribute('aria-checked', checked[i] ? 'true' : 'false'); }); }
   document.querySelectorAll('#lesson .crit .tile').forEach(function (tl, i) {
     tl.addEventListener('click', function () { if (judged) return; checked[i] = !checked[i]; paintChecks(); });
   });
+  /* the path: a dotted line through the stops, the character beside the chosen one, a tick on finished levels */
+  var done = [];
+  try { done = JSON.parse(localStorage.getItem('speaklab-done') || '[]') || []; } catch (e) {}
+  function paintDone() { document.querySelectorAll('#lesson .lvl').forEach(function (b) { b.classList.toggle('is-done', done.indexOf(b.dataset.level) >= 0); }); }
+  function markDone(l) { if (done.indexOf(l) < 0) { done.push(l); try { localStorage.setItem('speaklab-done', JSON.stringify(done)); } catch (e) {} } paintDone(); }
+  function placeMe() {
+    var pth = $('path'), me = $('path-me'); if (!pth || !pth.offsetWidth) return;
+    var cur = pth.querySelector('.lvl[aria-checked=true]') || pth.querySelector('.lvl:not(.is-done)') || pth.querySelector('.lvl');
+    var pr = pth.getBoundingClientRect(), r = cur.getBoundingClientRect();
+    me.style.transform = 'translate(' + (r.left - pr.left - 64) + 'px,' + (r.top - pr.top + 6) + 'px)';
+  }
+  function placePath() {
+    var pth = $('path'); if (!pth || !pth.offsetWidth) return;
+    var pr = pth.getBoundingClientRect(), pts = [];
+    pth.querySelectorAll('.node').forEach(function (nd) { var r = nd.getBoundingClientRect(); pts.push([r.left - pr.left + r.width / 2, r.top - pr.top + r.height / 2 + 4]); });
+    var d = 'M' + pts[0][0] + ' ' + pts[0][1];
+    for (var i = 1; i < pts.length; i++) { var my = (pts[i - 1][1] + pts[i][1]) / 2; d += ' C' + pts[i - 1][0] + ' ' + my + ' ' + pts[i][0] + ' ' + my + ' ' + pts[i][0] + ' ' + pts[i][1]; }
+    $('path-d').setAttribute('d', d);
+    placeMe();
+  }
+  window.addEventListener('resize', placePath);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(placePath);
+  paintDone();
+
+  /* a moving sound wave while the pupil speaks (drawn, not measured: the page does not listen) */
+  function drawWave() {
+    var cv = $('speak-wave'), cx = cv.getContext && cv.getContext('2d'); if (!cx) return;
+    var t0w = performance.now();
+    (function loopW(now) {
+      var w = cv.width, h = cv.height, n = 48, bw = w / n, t = (now - t0w) / 1000;
+      cx.clearRect(0, 0, w, h);
+      for (var i = 0; i < n; i++) {
+        var a = pupilSpeaking && !reduce ? (0.2 + 0.8 * Math.abs(Math.sin(t * 3.1 + i * 0.55) * Math.sin(t * 1.7 + i * 0.21))) * (0.45 + 0.55 * Math.sin(Math.PI * i / (n - 1))) : 0.06;
+        var bh = Math.max(8, a * (h - 8));
+        cx.fillStyle = pupilSpeaking ? '#ff4a1f' : '#d7d8dc';
+        cx.beginPath(); var x = i * bw + bw * 0.22, y = (h - bh) / 2, bwid = bw * 0.56, rr = bwid / 2;
+        cx.moveTo(x + rr, y); cx.arcTo(x + bwid, y, x + bwid, y + bh, rr); cx.arcTo(x + bwid, y + bh, x, y + bh, rr); cx.arcTo(x, y + bh, x, y, rr); cx.arcTo(x, y, x + bwid, y, rr); cx.fill();
+      }
+      if (pupilSpeaking && !reduce) requestAnimationFrame(loopW);
+    })(performance.now());
+  }
+
   skip.addEventListener('click', function () { go(step + 1); });
   $('l-restart').addEventListener('click', function () { lv = null; document.querySelectorAll('#lesson .lvl').forEach(function (o) { o.setAttribute('aria-checked', 'false'); }); go(0); });
   next.addEventListener('click', function () {
@@ -1007,6 +1216,9 @@ html { scrollbar-color: var(--muted) var(--bg); }
       var top = $('l-xp').getBoundingClientRect(), box = $('lesson').getBoundingClientRect();
       fly.style.left = (top.left - box.left) + 'px'; fly.style.top = (top.top - box.top + 18) + 'px';
       $('lesson').style.position = 'relative'; $('lesson').appendChild(fly); setTimeout(function () { fly.remove(); }, 1200);
+      if (good) celebrate(n);
+      foot.classList.remove('is-happy', 'is-cheer'); void foot.offsetWidth; foot.classList.add(good ? 'is-happy' : 'is-cheer');
+      if (n === 3) markDone(lv);
       var nx = TASKS[lv].next;
       next.textContent = n === 3 && nx ? 'Niveau suivant' : 'Recommencer';
       return;
@@ -1015,6 +1227,24 @@ html { scrollbar-color: var(--muted) var(--bg); }
     if (all && nx2) { lv = nx2; document.querySelectorAll('#lesson .lvl').forEach(function (o) { o.setAttribute('aria-checked', o.dataset.level === lv ? 'true' : 'false'); }); load(); go(1); }
     else go(1);
   });
+
+  function celebrate(n) {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) { var ac = new AC(); [[660, 0], [880, 0.12], [n === 3 ? 1320 : 990, 0.24]].forEach(function (nt) { var o = ac.createOscillator(), g = ac.createGain(); o.type = 'triangle'; o.frequency.value = nt[0]; g.gain.setValueAtTime(0.0001, ac.currentTime + nt[1]); g.gain.exponentialRampToValueAtTime(0.12, ac.currentTime + nt[1] + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + nt[1] + 0.28); o.connect(g); g.connect(ac.destination); o.start(ac.currentTime + nt[1]); o.stop(ac.currentTime + nt[1] + 0.3); }); setTimeout(function () { ac.close(); }, 900); }
+    } catch (e) {}
+    if (reduce) return;
+    var box = $('lesson'), fr2 = foot.getBoundingClientRect(), br = box.getBoundingClientRect(), cols = ['#ff4a1f', '#18191b', '#ffc2ad', '#b52c0a'];
+    box.style.position = 'relative';
+    for (var i = 0; i < (n === 3 ? 36 : 20); i++) {
+      var b = document.createElement('span'); b.className = 'bit';
+      b.style.background = cols[i % cols.length];
+      b.style.left = (40 + (i * 53) % Math.max(60, br.width - 80)) + 'px'; b.style.top = (fr2.top - br.top) + 'px';
+      b.style.setProperty('--dx', ((i * 37) % 120 - 60) + 'px'); b.style.setProperty('--dy', (-(140 + (i * 29) % 220)) + 'px'); b.style.setProperty('--r', ((i * 71) % 540 - 270) + 'deg');
+      b.style.animationDelay = ((i * 13) % 180) + 'ms';
+      box.appendChild(b); (function (el) { setTimeout(function () { el.remove(); }, 1500); })(b);
+    }
+  }
 
   /* the device's own English voice, when there is one */
   var synth = window.speechSynthesis, canSpeak = !!(synth && window.SpeechSynthesisUtterance);
@@ -1038,6 +1268,59 @@ html { scrollbar-color: var(--muted) var(--bg); }
   $('l-words').addEventListener('click', function (e) { var b = e.target.closest('[data-say]'); if (b) { b.setAttribute('aria-pressed', 'true'); setTimeout(function () { b.removeAttribute('aria-pressed'); }, 600); speak(b.dataset.say.replace('…', ''), 0.85); } });
 
   go(0);
+
+  /* the teacher's screen: open a pupil, set the criteria, mark as listened */
+  (function () {
+    var rows = Array.prototype.slice.call(document.querySelectorAll('.desk tr.is-row')), panel = $('dk-detail');
+    if (!rows.length || !panel) return;
+    var heads = Array.prototype.slice.call(document.querySelectorAll('.desk thead th')).slice(2, 5).map(function (th) { return th.textContent; });
+    var cur = null, playT = null;
+    var prioEl = document.querySelector('.desk .dk-stats .warn b'), doneEl = document.querySelector('.desk .dk-stats span b');
+    function level(td) { return td.querySelectorAll('i.on').length; }
+    function setLevel(td, n) { td.querySelectorAll('i').forEach(function (d, i) { d.classList.toggle('on', i < n); }); }
+    function chip(row) { return row.cells[5].querySelector('.chip'); }
+    function open(row) {
+      if (playT) { clearInterval(playT); playT = null; } $('dk-d-fill').style.width = '0';
+      rows.forEach(function (r) { r.classList.toggle('is-open', r === row); });
+      cur = row; panel.hidden = false;
+      var missing = chip(row).classList.contains('none') && row.cells[1].textContent.trim() === '—';
+      $('dk-d-name').textContent = row.cells[0].textContent + (missing ? '' : ' · ' + row.cells[1].textContent);
+      $('dk-d-done').hidden = missing; $('dk-d-missing').hidden = !missing;
+      if (missing) { $('dk-d-remind').disabled = chip(row).textContent !== 'non rendu'; $('dk-d-remind').textContent = $('dk-d-remind').disabled ? 'Rappel envoyé' : 'Envoyer un rappel'; return; }
+      $('dk-d-dur').textContent = row.cells[1].textContent;
+      $('dk-d-crit').innerHTML = heads.map(function (h, c) {
+        var n = level(row.cells[2 + c]);
+        return '<div><span>' + h + '</span><span>' + [1, 2, 3].map(function (v) { return '<button type="button" data-c="' + c + '" data-v="' + v + '" class="' + (v <= n ? 'on' : '') + '" aria-label="' + h + ' : ' + v + ' sur 3"></button>'; }).join('') + '</span></div>';
+      }).join('');
+      var listened = chip(row).textContent === 'écouté';
+      $('dk-d-mark').disabled = listened; $('dk-d-mark').textContent = listened ? 'Écouté' : 'Marquer comme écouté';
+    }
+    rows.forEach(function (r) {
+      r.tabIndex = 0; r.setAttribute('role', 'button');
+      r.addEventListener('click', function () { open(r); });
+      r.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(r); } });
+    });
+    $('dk-d-close').addEventListener('click', function () { panel.hidden = true; rows.forEach(function (r) { r.classList.remove('is-open'); }); });
+    $('dk-d-crit').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b || !cur) return;
+      var c = +b.dataset.c, v = +b.dataset.v, td = cur.cells[2 + c];
+      if (level(td) === v) v -= 1;
+      setLevel(td, v);
+      $('dk-d-crit').querySelectorAll('button[data-c="' + c + '"]').forEach(function (o) { o.classList.toggle('on', +o.dataset.v <= v); });
+    });
+    $('dk-d-mark').addEventListener('click', function () {
+      if (!cur) return; var ch = chip(cur);
+      if (ch.classList.contains('prio') && prioEl) prioEl.textContent = Math.max(0, parseInt(prioEl.textContent, 10) - 1);
+      ch.className = 'chip'; ch.textContent = 'écouté';
+      this.disabled = true; this.textContent = 'Écouté';
+    });
+    $('dk-d-remind').addEventListener('click', function () { if (!cur) return; chip(cur).textContent = 'rappel envoyé'; this.disabled = true; this.textContent = 'Rappel envoyé'; });
+    $('dk-d-play').addEventListener('click', function () {
+      if (playT) { clearInterval(playT); playT = null; return; }
+      var k = 0; $('dk-d-fill').style.width = '0';
+      playT = setInterval(function () { k += 2; $('dk-d-fill').style.width = k + '%'; if (k >= 100) { clearInterval(playT); playT = null; } }, 80);
+    });
+  })();
 
   /* copy the address */
   $('copy').addEventListener('click', function () {
@@ -1122,7 +1405,7 @@ html { scrollbar-color: var(--muted) var(--bg); }
     }
   }
 
-  var state = { pupils: 26, classe: 0, added: 0 }, shown = false, az = -0.55, azT = -0.55, polar = 1.02, radius = 20, radiusT = 20, centerY = 0.6, centerYT = 0.6;
+  var state = { pupils: 26, classe: 0, added: 0 }, mode = 'avg', wts = [], wMax = 1, shown = false, az = -0.55, azT = -0.55, polar = 1.02, radius = 20, radiusT = 20, centerY = 0.6, centerYT = 0.6;
   function layout() {
     var n = state.pupils, rows = Math.ceil(n / PER_ROW), depth = (rows - 1) * ROW_GAP;
     var z0 = -depth / 2 + 0.6;
@@ -1133,7 +1416,11 @@ html { scrollbar-color: var(--muted) var(--bg); }
     board.position.set(0.3, 1.25, front - 0.9);
     var w = 3 * PAIR_GAP + 1.6, d = depth + 5;
     floor.scale.set(w, 1, d); floor.position.z = z0 + depth / 2 - 1.6;
-    var hMax = TOP + (state.classe + state.added) * K;
+    /* in 'vol' mode the same class total is shared unevenly: a few volunteers, some occasional speakers, many near silent */
+    var sum = 0; wts = [];
+    for (var wi = 0; wi < n; wi++) { var w = mode === 'avg' ? 1 : (wi % 7 === 2 ? 6 : (wi % 4 === 1 ? 1.2 : 0.12)); wts.push(w); sum += w; }
+    wMax = 0; wts = wts.map(function (w) { var v = w * n / sum; if (v > wMax) wMax = v; return v; });
+    var hMax = TOP + (state.classe * wMax + state.added) * K;
     centerYT = Math.min(hMax, 3) * 0.42;
     var R = Math.sqrt(w * w / 4 + d * d / 4 + hMax * hMax / 3);
     var aspect = camera.aspect || 1.6, vf = camera.fov * Math.PI / 180, hf = 2 * Math.atan(Math.tan(vf / 2) * aspect);
@@ -1142,7 +1429,7 @@ html { scrollbar-color: var(--muted) var(--bg); }
   function targets(stagger) {
     var now = performance.now();
     seats.forEach(function (s, i) {
-      s.ta = shown && s.on ? state.classe * K : 0;
+      s.ta = shown && s.on ? state.classe * K * (wts[i] || 0) : 0;
       s.tb = shown && s.on ? state.added * K : 0;
       s.at = now + (stagger && !reduce ? (s.row * 90 + (i % PER_ROW) * 25) : 0);
     });
@@ -1181,6 +1468,15 @@ html { scrollbar-color: var(--muted) var(--bg); }
   var end = function () { dragging = false; kick(); };
   stage.addEventListener('pointerup', end); stage.addEventListener('pointercancel', end);
 
+  var note = document.getElementById('room-note');
+  Array.prototype.forEach.call(fig.querySelectorAll('.room__mode'), function (b) {
+    b.addEventListener('click', function () {
+      mode = b.dataset.mode;
+      Array.prototype.forEach.call(fig.querySelectorAll('.room__mode'), function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+      note.textContent = mode === 'avg' ? 'Une colonne par élève, à la moyenne de la classe. Faites glisser pour tourner la salle.' : "Illustration : le même total de minutes, réparti comme dans une classe où quelques volontaires prennent la parole. Répartition inventée pour l'exemple.";
+      layout(); targets(true); kick();
+    });
+  });
   window.SpeakRoom = { set: function (v) { var nChanged = v.pupils !== state.pupils; state = { pupils: v.pupils, classe: v.classe, added: v.added }; layout(); targets(nChanged); kick(); } };
   if (window.__speak) state = window.__speak;
   if ('ResizeObserver' in window) new ResizeObserver(resize).observe(stage); else window.addEventListener('resize', resize);
@@ -1230,7 +1526,8 @@ html { scrollbar-color: var(--muted) var(--bg); }
   });
   var kLetter = letters[4];
 
-  /* the speaking head, standing on the stem of the k: profile facing right, origin at the base of the neck */
+  /* the speaking head, standing on the stem of the k: profile facing right, origin at the base of the neck.
+     The jaw is its own piece on a hinge so the head can open its mouth. */
   var mount = new THREE.Group(); mount.position.set(0.150, 0.744, 0); kLetter.add(mount);
   var head = new THREE.Group(); mount.add(head);
   var sh = new THREE.Shape();
@@ -1244,26 +1541,36 @@ html { scrollbar-color: var(--muted) var(--bg); }
   sh.bezierCurveTo(1.00, 0.58, 0.95, 0.57, 0.92, 0.57);
   sh.bezierCurveTo(0.94, 0.555, 0.95, 0.53, 0.95, 0.51);
   sh.lineTo(0.905, 0.495);
-  sh.lineTo(0.94, 0.47);
-  sh.bezierCurveTo(0.95, 0.44, 0.93, 0.41, 0.90, 0.40);
-  sh.bezierCurveTo(0.92, 0.37, 0.90, 0.33, 0.86, 0.32);
-  sh.bezierCurveTo(0.80, 0.30, 0.70, 0.30, 0.66, 0.27);
+  sh.lineTo(0.58, 0.47);
+  sh.lineTo(0.66, 0.27);
   sh.bezierCurveTo(0.64, 0.18, 0.66, 0.06, 0.70, 0.00);
   sh.lineTo(0.30, 0.00);
-  var hg = new THREE.ExtrudeGeometry(sh, { depth: 0.34, curveSegments: 24, bevelEnabled: true, bevelThickness: 0.035, bevelSize: 0.025, bevelSegments: 4 });
+  var ext = { depth: 0.34, curveSegments: 24, bevelEnabled: true, bevelThickness: 0.035, bevelSize: 0.025, bevelSegments: 4 };
+  var hg = new THREE.ExtrudeGeometry(sh, ext);
   hg.translate(-0.50, 0.02, -0.17);
   head.add(new THREE.Mesh(hg, paper));
+  var js = new THREE.Shape();
+  js.moveTo(0.58, 0.47);
+  js.lineTo(0.905, 0.495);
+  js.lineTo(0.94, 0.47);
+  js.bezierCurveTo(0.95, 0.44, 0.93, 0.41, 0.90, 0.40);
+  js.bezierCurveTo(0.92, 0.37, 0.90, 0.33, 0.86, 0.32);
+  js.bezierCurveTo(0.80, 0.30, 0.70, 0.30, 0.66, 0.27);
+  js.lineTo(0.58, 0.47);
+  var jg = new THREE.ExtrudeGeometry(js, { depth: 0.31, curveSegments: 16, bevelEnabled: true, bevelThickness: 0.035, bevelSize: 0.022, bevelSegments: 4 });
+  jg.translate(-0.58, -0.47, -0.155);
+  var jaw = new THREE.Group(); jaw.position.set(0.08, 0.49, 0); jaw.add(new THREE.Mesh(jg, paper)); head.add(jaw);
   var waves = [];
   [0.15, 0.29, 0.43].forEach(function (r) {
     var mt = lin(0xff4a1f, 0.4); mt.transparent = true;
     var t = new THREE.Mesh(new THREE.TorusGeometry(r, 0.038, 14, 48, 1.5), mt);
     t.rotation.z = -0.75;
-    t.position.set(0.52, 0.51, 0);
+    t.position.set(0.52, 0.49, 0);
     head.add(t); waves.push(t);
   });
 
   /* fit the word to the h1 box the page lays out */
-  var W = 1, H = 1, upp = 1, fs = 100, base = { x: 0, y: 0 }, headEm = 0.5;
+  var W = 1, H = 1, upp = 1, fs = 100, base = { x: 0, y: 0 }, headEm = 0.5, headPx = { x: 0, y: 0 };
   function toWorld(px, py) { return { x: (px - W / 2) * upp, y: (H / 2 - py) * upp }; }
   function layout() {
     var hr = hero.getBoundingClientRect(); W = hr.width; H = hr.height; if (!W || !H) return;
@@ -1273,16 +1580,14 @@ html { scrollbar-color: var(--muted) var(--bg); }
     var r = h1.getBoundingClientRect();
     base = toWorld(r.left - hr.left, H + fs * 0.04);
     headEm = Math.max(0.5, 120 / fs) / 1.2;
+    /* where the head sits on screen, taken from the layout so it never chases its own movement */
+    headPx.x = (r.left - hr.left) + (kLetter.position.x + 0.15) * fs;
+    headPx.y = H + fs * 0.04 - (0.744 + headEm * 0.6) * fs;
   }
 
-  /* pointer: the head turns to look at it, the word tilts, a click makes it speak */
-  var ptr = { x: 0, y: 0, px: -1, py: -1, active: false }, tilt = { x: 0, y: 0 };
-  var face = Math.PI, faceT = Math.PI, nod = 0, burst = 0, burstAt = -10, near = 0;
-  var v3 = new THREE.Vector3();
-  function headScreen() {
-    mount.getWorldPosition(v3); v3.y += headEm * fs * upp * 0.55; v3.project(camera);
-    return { x: (v3.x + 1) / 2 * W, y: (1 - v3.y) / 2 * H };
-  }
+  /* pointer: smoothed first, then the head leans toward it within a small range. A click makes it speak. */
+  var ptr = { x: 0, y: 0, px: 0, py: 0, active: false }, sp = { x: 0, y: 0, dx: 0, dy: 0 }, tilt = { x: 0, y: 0 };
+  var yaw = 0.42, nod = 0, near = 0, voice = 0, phase = 0, burstAt = -10, external = 0;
   function setPtr(e) {
     var r = hero.getBoundingClientRect();
     ptr.px = e.clientX - r.left; ptr.py = e.clientY - r.top; ptr.active = true;
@@ -1293,60 +1598,67 @@ html { scrollbar-color: var(--muted) var(--bg); }
   hero.addEventListener('pointerdown', function (e) {
     setPtr(e);
     if (e.target.closest('a, button')) return;
-    burst = 1; burstAt = performance.now() / 1000;
+    burstAt = performance.now() / 1000;
   });
-  hero.addEventListener('pointerleave', function () { ptr.active = false; ptr.x = 0; ptr.y = 0; });
+  hero.addEventListener('pointerleave', function () { ptr.active = false; });
+  /* other parts of the page can make the head speak (0 to 1), for example while audio plays */
+  window.SpeakHead = { talk: function (level) { external = Math.max(0, Math.min(1, level || 0)); kick(); } };
 
   var t0 = performance.now(), running = false, raf = null, last = performance.now();
   var ease = function (x) { return x >= 1 ? 1 : 1 - Math.pow(2, -10 * x); };
   var back = function (x) { if (x >= 1) return 1; var c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+  var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
   function frame(now) {
     raf = null;
-    var t = (now - t0) / 1000, sec = now / 1000, dt = Math.min(0.1, (now - last) / 1000); last = now;
-    var damp = function (rate) { return 1 - Math.exp(-rate * dt); };
-    tilt.x += (ptr.y * 0.10 - tilt.x) * damp(4); tilt.y += (ptr.x * 0.16 - tilt.y) * damp(4);
+    var t = (now - t0) / 1000, sec = now / 1000, dt = Math.min(0.05, (now - last) / 1000); last = now;
+    var damp = function (rate) { return reduce ? 1 : 1 - Math.exp(-rate * dt); };
+
+    /* one smoothed pointer feeds everything */
+    var tx = ptr.active ? ptr.x : 0, ty = ptr.active ? ptr.y : 0;
+    var tdx = ptr.active ? clamp((ptr.px - headPx.x) / 520, -1, 1) : -0.4;
+    var tdy = ptr.active ? clamp((ptr.py - headPx.y) / 420, -1, 1) : 0;
+    sp.x += (tx - sp.x) * damp(5); sp.y += (ty - sp.y) * damp(5);
+    sp.dx += (tdx - sp.dx) * damp(5); sp.dy += (tdy - sp.dy) * damp(5);
+
+    /* the word leans a couple of degrees, no more */
+    tilt.x = sp.y * 0.035; tilt.y = sp.x * 0.06;
     var leave = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / H));
     word.position.set(base.x, base.y, 0);
     word.scale.setScalar(fs * upp * (1 - 0.07 * leave));
-    word.rotation.x = tilt.x * 0.6; word.rotation.y = tilt.y * 0.6;
+    word.rotation.x = tilt.x; word.rotation.y = tilt.y;
 
-    /* where the head should look */
-    var hs = headScreen();
-    if (ptr.active) {
-      var dx = ptr.px - hs.x, dy = ptr.py - hs.y;
-      faceT = dx < 0 ? Math.PI : 0;
-      var lookUp = Math.max(-0.45, Math.min(0.45, -dy / (H * 0.6)));
-      nod += (lookUp - nod) * damp(8);
-      var d = Math.sqrt(dx * dx + dy * dy);
-      near += (Math.max(0, 1 - d / 320) - near) * damp(6);
-    } else {
-      faceT = Math.PI;
-      nod += ((reduce ? 0 : Math.sin(t * 0.6) * 0.08) - nod) * damp(3);
-      near += (0 - near) * damp(3);
-    }
-    face += (faceT - face) * (reduce ? 1 : damp(11));
-    burst = Math.max(0, 1 - (sec - burstAt) / 1.4);
+    /* the head keeps facing the text and turns toward the pointer inside a fixed range: it never flips */
+    yaw += ((0.5 + sp.dx * 0.42) - yaw) * damp(7);
+    nod += ((-sp.dy * 0.22) - nod) * damp(7);
+    var d = ptr.active ? Math.hypot(ptr.px - headPx.x, ptr.py - headPx.y) : 9999;
+    near += ((d < 170 ? 1 : 0) - near) * damp(4);
+    var burst = Math.max(0, 1 - (sec - burstAt) / 1.4);
+
+    /* how much it is speaking right now: idle murmur, pointer close by, a click, or audio from the page */
+    var idle = reduce ? 0 : Math.max(0, Math.sin(t * 0.9)) * 0.35;
+    var target = Math.max(idle, near * 0.9, burst, external);
+    voice += (target - voice) * damp(6);
+    phase += dt * 9;
+    var syll = reduce ? 0 : (0.5 + 0.5 * Math.sin(phase)) * (0.6 + 0.4 * Math.sin(phase * 0.37 + 1.3));
 
     var he = reduce ? 1 : back(Math.max(0, t - 1.0) / 0.7);
     mount.scale.setScalar(headEm * Math.max(0.0001, he));
-    head.rotation.y = face + (face > Math.PI / 2 ? -0.32 : 0.32) + (reduce ? 0 : Math.sin(t * 0.8) * 0.08);
+    head.rotation.y = Math.PI + yaw;
     head.rotation.z = nod;
-    head.position.y = burst * Math.max(0, Math.sin((sec - burstAt) * 14)) * 0.05;
+    head.position.y = 0;
+    jaw.rotation.z = -voice * syll * 0.3;
 
-    var talkSpeed = 5.2 + near * 3 + burst * 4;
-    var speaking = reduce ? 1 : Math.min(1, Math.max(0, Math.sin(t * 1.3)) * 0.5 + 0.5 + near * 0.7 + burst);
     waves.forEach(function (w, i) {
-      var pulse = reduce ? 1 : Math.max(0, Math.sin(t * talkSpeed - i * 0.9));
-      w.material.opacity = Math.min(1, (0.4 + 0.6 * pulse) * speaking);
-      w.scale.setScalar(0.9 + 0.12 * pulse + burst * 0.5 * (1 + i * 0.3));
+      var pulse = reduce ? 1 : 0.5 + 0.5 * Math.sin(phase * 0.6 - i * 0.9);
+      w.material.opacity = Math.min(1, 0.12 + (0.25 + 0.75 * pulse) * (reduce ? 0.8 : voice));
+      w.scale.setScalar(0.92 + 0.1 * pulse * voice + burst * 0.45 * (1 + i * 0.3));
     });
     letters.forEach(function (m, i) {
       var e = reduce ? 1 : ease(Math.max(0, t - 0.15 - i * 0.07) / 0.9);
-      var talk = reduce ? 0 : Math.max(0, Math.sin(t * talkSpeed - i * 0.9)) * speaking * 0.03;
       var lag = sec - burstAt - (4 - i) * 0.07;
-      var jump = (lag > 0 && lag < 0.5) ? Math.sin(lag / 0.5 * Math.PI) * 0.12 : 0;
-      m.position.y = -0.95 * (1 - e) + talk + jump;
-      m.position.z = talk * 2;
+      var jump = (!reduce && lag > 0 && lag < 0.5) ? Math.sin(lag / 0.5 * Math.PI) * 0.1 : 0;
+      m.position.y = -0.95 * (1 - e) + jump;
+      m.position.z = 0;
     });
     renderer.render(scene, camera);
     if (running && !reduce) kick();
@@ -1356,7 +1668,7 @@ html { scrollbar-color: var(--muted) var(--bg); }
   if ('ResizeObserver' in window) new ResizeObserver(relayout).observe(hero); else window.addEventListener('resize', relayout);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
   layout();
-  if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { running = en[0].isIntersecting; if (running) kick(); }).observe(hero);
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { running = en[0].isIntersecting; if (running) { last = performance.now(); kick(); } }).observe(hero);
   else running = true;
   kick();
 })();
